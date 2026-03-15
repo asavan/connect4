@@ -1,0 +1,199 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --main-color: #F0F8FF;
+  --comp-color: red;
+  --player-color: royalblue;
+  --field-size: 4;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+footer {
+  flex: 0 0 auto;
+}
+
+.qrcode.big {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--field-size) * 100px + 50px);
+}
+
+.qrcode {
+  width: 300px;
+  margin: auto;
+}
+
+@media (max-width: 700px) {
+  .hidden2 {
+    display: none;
+  }
+}
+
+.install {
+  background-color: var(--main-color);
+  text-align: center;
+  font: bold 24px/100px Tahoma, sans-serif;
+  height: 100px;
+  width: 100%;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+}
+
+
+img {
+  max-width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100px;
+}
+
+
+@media (max-width: 450px) {
+  .hidden2 {
+    display: none;
+  }
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 70%);
+  transition: opacity 700ms;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.overlay.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.popup {
+  margin: 70px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 5px;
+  width: 80%;
+  position: relative;
+  transition: all 5s ease-in-out;
+}
+
+.popup h2 {
+  margin-top: 0;
+  color: #333;
+  font-family: Tahoma, Arial, sans-serif;
+}
+
+.popup .close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  transition: all 400ms;
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+
+.popup .close:hover {
+  color: var(--player-color);
+}
+
+.popup .content {
+  max-height: 30%;
+  overflow: auto;
+}
+
+.check-div {
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+.input-div {
+  display: grid;
+  grid-template-columns: repeat(var(--field-size), 1fr);
+  gap: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+input {
+  text-align: center;
+  border: none;
+
+  /* Here pay attention to modify the default outer border properties, without border */
+  outline: 1px solid black;
+  font-size: 28px;
+  border-radius: 10%;
+  font-family: 'Fjalla One', sans-serif;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+input::placeholder {
+  opacity: 0.2;
+  font-size: 10px;
+}
+
+.square {
+  text-align: center;
+  border: none;
+  aspect-ratio: 1 / 1;
+
+  /* Here pay attention to modify the default outer border properties, without border */
+}
+
+input:focus {
+  outline: 2px solid #3494fe;
+}
+
+.request {
+  font-style: italic;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  max-width: 300px;
+}
+
+.result {
+  flex: 1 0 auto;
+  list-style-type: none;
+  columns: 2;
+  column-fill: auto;
+  height: 200px;
+}
+
+.row {
+  font-size: 36px;
+  display: flex;
+  font-family: 'Roboto Mono', monospace;
+  justify-content: space-between;
+}
+
+.hidden {
+  display: none;
+}

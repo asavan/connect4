@@ -1,0 +1,19 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : { "namespace": "android_app", "package_name": "fun.determinant.asavan",
+               "sha256_cert_fingerprints": [
+                 "89:13:2F:96:24:E4:53:39:06:F6:AF:72:18:CB:56:E9:E7:D3:74:25:64:1D:D1:F6:AB:5B:54:4F:B4:72:8A:8C",
+			   	 "CC:16:07:AA:2C:00:F3:1D:7B:65:A9:34:D8:88:09:E2:33:6C:A1:4C:AC:AD:77:9C:BF:BC:2F:15:65:E4:6A:F4",
+				 "42:58:AF:E3:C6:F8:F3:01:E7:33:84:A5:F7:4A:35:C9:34:14:3C:2B:67:B6:5A:5C:6E:A4:4E:BC:5C:73:B4:4D"
+               ] }
+},
+{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : { "namespace": "android_app", "package_name": "ru.asavan.mastermind",
+    "sha256_cert_fingerprints": [
+      "FA:1E:23:5C:08:78:C3:01:20:97:0B:7A:FC:0A:08:1F:EE:B6:54:28:11:49:FB:46:52:CC:CC:E5:00:6F:0B:F4",
+      "42:58:AF:E3:C6:F8:F3:01:E7:33:84:A5:F7:4A:35:C9:34:14:3C:2B:67:B6:5A:5C:6E:A4:4E:BC:5C:73:B4:4D"
+    ]
+  }
+}
+]

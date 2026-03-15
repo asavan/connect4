@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>connect4</title>
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="connect4 game">
+    <link id="favicon" rel="icon" href="./images/icon.svg" sizes="any" type="image/svg+xml">
+    <link rel="manifest" href="./app.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="./images/icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Roboto+Mono:ital,wght@0,600;1,400&display=swap" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+<div class="content">
+    <div class="app">
+        <ul class="result">
+
+        </ul>
+        <div class="check-div">
+            <div class="input-div">
+            </div>
+            <div class="log"></div>
+        </div>
+    </div>
+    <div class="qrcontainer"></div>
+    <div class="qrcontainerserver"></div>
+    <div id="popup1" class="overlay">
+        <div class="popup">
+            <h2>You win</h2>
+            <a class="close" href="#">&times;</a>
+            <div class="content">
+                Result 0
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <button id="butInstall" class="butInstall install hidden hidden2">Install as app</button>
+</footer>
+<template id="result-row">
+    <li class="row">
+        <div class="request"></div>
+        <div class="response"></div>
+    </li>
+</template>
+<template id="cell">
+    <div class="square">
+        <input inputmode="numeric"
+               pattern="[0-9]*"
+               type="text"
+               data-index="0"
+               maxlength="1"
+        />
+    </div>
+</template>
+</body>
+
+</html>
