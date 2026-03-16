@@ -26,20 +26,46 @@ export function getClickIndex(e, count, width) {
     return Math.floor((e.offsetX + 1) * count / width);
 }
 
+function setupOverlay(document, onClose) {
+    const overlay = document.querySelector(".overlay");
+    const close = document.querySelector(".close");
+    close.addEventListener("click", (e) => {
+        e.preventDefault();
+        overlay.classList.remove("show");
+        if (onClose) {
+            onClose();
+        }
+    }, false);
+    return overlay;
+}
+
+function onGameEndDraw(res, overlay) {
+    const message = "Win";
+    const h2 = overlay.querySelector("h2");
+    h2.textContent = message;
+    const content = overlay.querySelector(".content");
+    content.textContent = "hooya";
+    overlay.classList.add("show");
+}
+
 export function draw(window, document, settings, engine, logger) {
     let curIndex = FIRST_PLAYER;
     document.documentElement.style.setProperty("--field-width", engine.width());
     document.documentElement.style.setProperty("--field-height", engine.height());
     const field = document.querySelector(".field");
+    const overlay = setupOverlay(document);
     const wF = field.offsetWidth;
     field.addEventListener("click", (e) => {
         const ind = getClickIndex(e, engine.width(), wF);
         logger.log("index", ind);
         const res = engine.move(ind, curIndex);
-        if (res > 0 && res !== GAME_DRAW) {
+        if (res > 0) {
             const iter = engine.iterateHorizontal();
             drawIter(iter, logger, document, field);
             curIndex = 3 - curIndex;
+            if (res === FIRST_PLAYER || res === GAME_DRAW || res === SECOND_PLAYER) {
+                onGameEndDraw(res, overlay);
+            }
         }
     });
     logger.log(field);
