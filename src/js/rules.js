@@ -6,7 +6,9 @@ export const VALIDATION_ERROR = -1;
 
 export function parseIntToArr(num) {
     const binaryString = num.toString(2);
-    return binaryString.split("");
+    return binaryString.split("").
+        slice(1).
+        map((x) => Number.parseInt(x, 10) + 1);
 }
 
 export function parseIntArr(intArr) {
@@ -14,14 +16,12 @@ export function parseIntArr(intArr) {
 }
 
 export function lastNonZero(arr) {
-    let i = 0;
-    for (const x of arr) {
-        if (x === 0) {
-            break;
+    for (let i = arr.length - 1; i >= 0; i--) {
+        if (arr[i] !== EMPTY_CELL) {
+            return i;
         }
-        ++i;
     }
-    return i - 1;
+    return VALIDATION_ERROR;
 }
 
 export function engine(intArr, cols, rows) {
