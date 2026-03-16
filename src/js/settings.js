@@ -7,13 +7,12 @@ export default {
     color: "blue",
     size: 4,
     logger: true,
-    repeat: false,
-    min: 1,
-    max: 6,
-    maxMoves: 8,
+    width: 7,
+    height: 6,
+    maxLen: 4,
     serverId: "",
     idNameInStorage: "my-id",
     idNameLen: 6,
-    gameChanPrefix: "master_",
+    gameChanPrefix: "connect4_",
     cheating: false
 };

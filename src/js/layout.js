@@ -53,6 +53,7 @@ export function draw(window, document, settings, engine, logger) {
     document.documentElement.style.setProperty("--field-width", engine.width());
     document.documentElement.style.setProperty("--field-height", engine.height());
     const field = document.querySelector(".field");
+    field.classList.remove("disabled");
     const overlay = setupOverlay(document);
     const wF = field.offsetWidth;
     field.addEventListener("click", (e) => {
@@ -64,6 +65,7 @@ export function draw(window, document, settings, engine, logger) {
             drawIter(iter, logger, document, field);
             curIndex = 3 - curIndex;
             if (res === FIRST_PLAYER || res === GAME_DRAW || res === SECOND_PLAYER) {
+                field.classList.add("disabled");
                 onGameEndDraw(res, overlay);
             }
         }

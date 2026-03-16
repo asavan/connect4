@@ -1,5 +1,3 @@
-"use strict";
-
 import actionsFunc from "../actions.js";
 import {
     actionToHandler,
@@ -10,7 +8,7 @@ import {
     removeElem,
     netObj
 } from "netutils";
-import {DEFAULT_ROWS, DEFAULT_FIELD, engine} from "../rules.js";
+import {engine} from "../rules.js";
 import {draw} from "../layout.js";
 
 
@@ -76,7 +74,9 @@ export default async function netMode(window, document, settings, gameFunction) 
     logger.log("connected");
     openCon.sendRawAll("join", {});
 
-    const eng = engine(DEFAULT_FIELD, DEFAULT_ROWS, 4, logger, (cond) => {
+    const initArr = Array(settings.width).fill(1);
+
+    const eng = engine(initArr, settings.height, settings.maxLen, logger, (cond) => {
         if (!cond) {
             throw Error("Bad happen");
         }

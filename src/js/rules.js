@@ -55,6 +55,7 @@ export function engine(intArr, rows, maxLen, logger, assert) {
     if (cm.first > cm.second) {
         curIndex = SECOND_PLAYER;
     }
+    let status = GAME_CONTINUE;
     logger.log(maxLen);
     const inBounds = (x, y) => x >= 0 && y >= 0 && y < cols && x < rows;
     const cell = (x, y) => {
@@ -91,8 +92,9 @@ export function engine(intArr, rows, maxLen, logger, assert) {
     };
 
     const isWin = (x, y) => {
-        const dd = [[1, 0], [0, 1], [1, 1]];
+        const dd = [[1, 0], [0, 1], [1, 1], [1, -1]];
         const val = cell(x, y);
+        let status = GAME_CONTINUE;
         assert(val === FIRST_PLAYER || val === SECOND_PLAYER, "Bad cell to check");
         let ii = 0;
         for (const d of dd) {
@@ -101,20 +103,23 @@ export function engine(intArr, rows, maxLen, logger, assert) {
             const posLen = sameLen(x, y, dx, dy, 1, val);
             if (posLen + 1 >= maxLen) {
                 logger.log("Win", posLen, maxLen, ii);
-                return val;
+                status = val;
+                break;
             }
             const negLen = sameLen(x, y, -dx, -dy, 1, val);
             if (posLen + negLen + 1 >= maxLen) {
+                status = val;
                 logger.log("Win", posLen, negLen, maxLen, ii);
-                return val;
+                break;
             }
             const cands = moveCands();
             if (cands.length === 0) {
-                return GAME_DRAW;
+                status = GAME_DRAW;
+                break;
             }
             ++ii;
         }
-        return GAME_CONTINUE;
+        return status;
     };
 
     const checkWinAfterMove = (y) => {
@@ -128,6 +133,9 @@ export function engine(intArr, rows, maxLen, logger, assert) {
         if (!checkCurrIndex(index)) {
             return VALIDATION_ERROR;
         }
+        if (status !== GAME_CONTINUE) {
+            return VALIDATION_ERROR;
+        }
         if (y < 0 || y >= cols) {
             return VALIDATION_ERROR;
         }
@@ -138,7 +146,7 @@ export function engine(intArr, rows, maxLen, logger, assert) {
         const x = col.length;
         col.push(index);
         curIndex = FIRST_PLAYER + SECOND_PLAYER - curIndex;
-        const status = isWin(x, y);
+        status = isWin(x, y);
         return status;
     };
 

@@ -5,7 +5,7 @@ export default async function starter(window, document) {
     parseSettings(window.location.search, settings);
 
     // TODO
-    const gameFunction = () => {};
+    const gameFunction = () => ({on : () => {}});
 
     if (settings.mode === "net") {
         const netMode = await import("./mode/net_mode.js");
