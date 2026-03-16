@@ -18,8 +18,8 @@
     "style2": "npx stylelint --config linters/stylelint.config.js \"src/**/*.css\"",
     "style2:fix": "npx stylelint --config linters/stylelint.config.js \"src/**/*.css\" --fix",
     "test": "node --test --test-reporter dot",
-    "test:verbose": "node --test ./tests",
-    "test:watch": "node --test --watch ./tests",
+    "test:verbose": "node --test",
+    "test:watch": "node --test --watch",
     "test:coverage": "c8 node --test --test-reporter dot",
     "updates": "npx ncu",
     "updates:fix": "npx ncu -u && npm install"

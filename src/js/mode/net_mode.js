@@ -10,6 +10,8 @@ import {
     removeElem,
     netObj
 } from "netutils";
+import {DEFAULT_COLS, DEFAULT_FIELD, engine} from "../rules.js";
+import {draw} from "../layout.js";
 
 
 function makeQr(window, document, settings, serverId) {
@@ -73,6 +75,13 @@ export default async function netMode(window, document, settings, gameFunction) 
     const openCon = await connection.connect();
     logger.log("connected");
     openCon.sendRawAll("join", {});
+
+    const eng = engine(DEFAULT_FIELD, DEFAULT_COLS, 4, logger, (cond) => {
+        if (!cond) {
+            throw Error("Bad happen");
+        }
+    });
+    draw(window, document, settings, eng, logger);
 
     const game = gameFunction(window, document, settings);
     const actions = actionsFunc(game);

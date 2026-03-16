@@ -2,13 +2,15 @@ export const EMPTY_CELL = 0;
 export const FIRST_PLAYER = 1;
 export const SECOND_PLAYER = 2;
 export const VALIDATION_ERROR = -1;
+export const GAME_CONTINUE = 3;
+export const GAME_DRAW = 4;
+export const DEFAULT_FIELD = [1, 1, 1, 1, 1, 1, 1];
+export const DEFAULT_COLS = 6;
 
 
 export function parseIntToArr(num) {
     const binaryString = num.toString(2);
-    return binaryString.split("").
-        slice(1).
-        map((x) => Number.parseInt(x, 10) + 1);
+    return binaryString.split("").slice(1).map((x) => Number.parseInt(x, 10) + 1);
 }
 
 export function parseIntArr(intArr) {
@@ -24,27 +26,135 @@ export function lastNonZero(arr) {
     return VALIDATION_ERROR;
 }
 
-export function engine(intArr, cols, rows) {
+export function engine(intArr, rows, maxLen, logger, assert) {
+    const cols = intArr.length;
     const matrix = parseIntArr(intArr);
-    const inBounds = (x, y) => x >= 0 && y >= 0 && x < cols && y < rows;
-    const checkWinAfterMove = (y) => {
-        const x = lastNonZero(matrix[y]);
-        const val = matrix[y][x];
 
-        return val;
+    const countMoves = () => {
+        let first = 0;
+        let second = 0;
+        for (const col of matrix) {
+            for (const x of col) {
+                if (x === FIRST_PLAYER) {
+                    ++first;
+                }
+                if (x === SECOND_PLAYER) {
+                    ++second;
+                }
+            }
+        }
+        return {
+            first, second
+        };
     };
+    const cm = countMoves();
+    const diff = cm.first - cm.second;
+    logger.log("diff", diff);
+    assert(diff >= 0 && diff < 2, "Bad board");
+    let curIndex = FIRST_PLAYER;
+    if (cm.first > cm.second) {
+        curIndex = SECOND_PLAYER;
+    }
+    logger.log(maxLen);
+    const inBounds = (x, y) => x >= 0 && y >= 0 && x < cols && y < rows;
     const cell = (x, y) => {
         if (!inBounds(x, y)) {
             return VALIDATION_ERROR;
         }
         const col = matrix[y];
-        if (col.length < x) {
+        if (col.length <= x) {
             return EMPTY_CELL;
         }
         return col[x];
     };
+
+    const sameLen = (x, y, dx, dy, step, val) => {
+        assert(val !== EMPTY_CELL);
+        assert(val > 0);
+        const newCell = cell(x + dx * step, y + dy * step);
+        if (newCell !== val) {
+            return step;
+        }
+        return sameLen(x, y, dx, dy, step + 1, val);
+    };
+
+    const moveCands = () => {
+        const res = [];
+        let i = 0;
+        for (const col of matrix) {
+            if (col.length < rows) {
+                res.push(i);
+            }
+            ++i;
+        }
+        return res;
+    };
+
+    const isWin = (x, y) => {
+        const dd = [[1, 0], [0, 1], [1, 1]];
+        const val = cell(x, y);
+        assert(val === FIRST_PLAYER || val === SECOND_PLAYER, "Bad cell to check");
+        for (const d of dd) {
+            const dx = d[0];
+            const dy = d[1];
+            const posLen = sameLen(x, y, dx, dy, 1, val);
+            if (posLen + 1 >= maxLen) {
+                return val;
+            }
+            const negLen = sameLen(x, y, -dx, -dy, 1, val);
+            if (posLen + negLen + 1 >= maxLen) {
+                return val;
+            }
+            const cands = moveCands();
+            if (cands.length > 0) {
+                return GAME_CONTINUE;
+            }
+            return GAME_DRAW;
+        }
+    };
+
+    const checkWinAfterMove = (y) => {
+        const x = lastNonZero(matrix[y]);
+        return isWin(x, y);
+    };
+
+    const checkCurrIndex = (index) => index === curIndex;
+
+    const move = (y, index) => {
+        if (!checkCurrIndex(index)) {
+            return VALIDATION_ERROR;
+        }
+        const col = matrix[y];
+        if (col.length > rows) {
+            return VALIDATION_ERROR;
+        }
+        const x = col.length;
+        col.push(index);
+        curIndex = FIRST_PLAYER + SECOND_PLAYER - curIndex;
+        const status = isWin(x, y);
+        return status;
+    };
+
+    const iterateHorizontal = () => {
+        const itHor = {
+            * [Symbol.iterator]() {
+                for (let j = cols; j > 0; --j) {
+                    for (let i = 0; i < rows; ++i) {
+                        yield cell(j - 1, i);
+                    }
+                }
+            }
+        };
+        return itHor;
+    };
+
+    const width = () => cols;
+
     return {
         cell,
-        checkWinAfterMove
+        checkWinAfterMove,
+        move,
+        iterateHorizontal,
+        width
     };
 }

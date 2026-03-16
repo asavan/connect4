@@ -1,13 +1,15 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 :root {
   --main-color: #F0F8FF;
-  --comp-color: red;
-  --player-color: royalblue;
-  --field-size: 4;
+  --first-player: red;
+  --second-player: orange;
+  --field-width: 7;
+  --field-height: 6;
 }
 
 html,
@@ -172,11 +174,35 @@ input:focus {
   font-style: italic;
 }
 
-.app {
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  max-width: 300px;
+.field {
+  display: grid;
+  grid-template-columns: repeat(var(--field-width), 1fr);
+  grid-template-rows: repeat(var(--field-height), 1fr);
+  gap: 10px;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.cell {
+  background-color: lightgray;
+  border: 1px solid #ccc;
+  padding: 10px;
+  aspect-ratio: 1/1;
+  width: 70px;
+  pointer-events: none;
+  text-align: center;
+}
+
+.first {
+  background-color: var(--first-player);
+}
+
+.second {
+  background-color: var(--second-player);
+}
+
+.empty {
+  background-color: var(--main-color);
 }
 
 .result {
