@@ -73,7 +73,7 @@ export function engine(intArr, rows, maxLen, logger, assert) {
         assert(val > 0);
         const newCell = cell(x + dx * step, y + dy * step);
         if (newCell !== val) {
-            return step;
+            return step - 1;
         }
         return sameLen(x, y, dx, dy, step + 1, val);
     };
@@ -94,23 +94,27 @@ export function engine(intArr, rows, maxLen, logger, assert) {
         const dd = [[1, 0], [0, 1], [1, 1]];
         const val = cell(x, y);
         assert(val === FIRST_PLAYER || val === SECOND_PLAYER, "Bad cell to check");
+        let ii = 0;
         for (const d of dd) {
             const dx = d[0];
             const dy = d[1];
             const posLen = sameLen(x, y, dx, dy, 1, val);
             if (posLen + 1 >= maxLen) {
+                logger.log("Win", posLen, maxLen, ii);
                 return val;
             }
             const negLen = sameLen(x, y, -dx, -dy, 1, val);
             if (posLen + negLen + 1 >= maxLen) {
+                logger.log("Win", posLen, negLen, maxLen, ii);
                 return val;
             }
             const cands = moveCands();
-            if (cands.length > 0) {
-                return GAME_CONTINUE;
+            if (cands.length === 0) {
+                return GAME_DRAW;
             }
-            return GAME_DRAW;
+            ++ii;
         }
+        return GAME_CONTINUE;
     };
 
     const checkWinAfterMove = (y) => {
@@ -124,8 +128,11 @@ export function engine(intArr, rows, maxLen, logger, assert) {
         if (!checkCurrIndex(index)) {
             return VALIDATION_ERROR;
         }
+        if (y < 0 || y >= cols) {
+            return VALIDATION_ERROR;
+        }
         const col = matrix[y];
-        if (col.length > rows) {
+        if (col.length >= rows) {
             return VALIDATION_ERROR;
         }
         const x = col.length;
