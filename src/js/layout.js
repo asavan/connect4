@@ -28,7 +28,8 @@ export function getClickIndex(e, count, width) {
 
 export function draw(window, document, settings, engine, logger) {
     let curIndex = FIRST_PLAYER;
-    // document.documentElement.style.setProperty("--field-size", engine.);
+    document.documentElement.style.setProperty("--field-width", engine.width());
+    document.documentElement.style.setProperty("--field-height", engine.height());
     const field = document.querySelector(".field");
     const wF = field.offsetWidth;
     field.addEventListener("click", (e) => {

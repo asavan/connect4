@@ -5,7 +5,7 @@ export const VALIDATION_ERROR = -1;
 export const GAME_CONTINUE = 3;
 export const GAME_DRAW = 4;
 export const DEFAULT_FIELD = [1, 1, 1, 1, 1, 1, 1];
-export const DEFAULT_COLS = 6;
+export const DEFAULT_ROWS = 6;
 
 
 export function parseIntToArr(num) {
@@ -56,7 +56,7 @@ export function engine(intArr, rows, maxLen, logger, assert) {
         curIndex = SECOND_PLAYER;
     }
     logger.log(maxLen);
-    const inBounds = (x, y) => x >= 0 && y >= 0 && x < cols && y < rows;
+    const inBounds = (x, y) => x >= 0 && y >= 0 && y < cols && x < rows;
     const cell = (x, y) => {
         if (!inBounds(x, y)) {
             return VALIDATION_ERROR;
@@ -138,9 +138,14 @@ export function engine(intArr, rows, maxLen, logger, assert) {
     const iterateHorizontal = () => {
         const itHor = {
             * [Symbol.iterator]() {
-                for (let j = cols; j > 0; --j) {
-                    for (let i = 0; i < rows; ++i) {
-                        yield cell(j - 1, i);
+                for (let j = rows; j > 0; --j) {
+                    for (let i = 0; i < cols; ++i) {
+                        const c = cell(j - 1, i);
+                        if (c < 0) {
+                            console.log({x: j-1, y: i});
+                        }
+                        assert(c >= 0);
+                        yield c;
                     }
                 }
             }
@@ -149,12 +154,14 @@ export function engine(intArr, rows, maxLen, logger, assert) {
     };
 
     const width = () => cols;
+    const height = () => rows;
 
     return {
         cell,
         checkWinAfterMove,
         move,
         iterateHorizontal,
-        width
+        width,
+        height
     };
 }

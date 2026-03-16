@@ -10,7 +10,7 @@ import {
     removeElem,
     netObj
 } from "netutils";
-import {DEFAULT_COLS, DEFAULT_FIELD, engine} from "../rules.js";
+import {DEFAULT_ROWS, DEFAULT_FIELD, engine} from "../rules.js";
 import {draw} from "../layout.js";
 
 
@@ -76,7 +76,7 @@ export default async function netMode(window, document, settings, gameFunction) 
     logger.log("connected");
     openCon.sendRawAll("join", {});
 
-    const eng = engine(DEFAULT_FIELD, DEFAULT_COLS, 4, logger, (cond) => {
+    const eng = engine(DEFAULT_FIELD, DEFAULT_ROWS, 4, logger, (cond) => {
         if (!cond) {
             throw Error("Bad happen");
         }
