@@ -1,14 +1,24 @@
 import {engine, FIRST_PLAYER, GAME_DRAW, SECOND_PLAYER} from "./rules.js";
+import {handlersFunc} from "netutils";
 
 export function presenter(settings, logger, trans) {
     let myIndex = settings.myIndex;
     const initArr = Array(settings.width).fill(1);
+
+    let externalDrawer = null;
+
+    const setDrawer = (d) => {
+        externalDrawer = d;
+    };
 
     const eng = engine(initArr, settings.height, settings.maxLen, logger, (cond) => {
         if (!cond) {
             throw Error("Bad happen");
         }
     });
+
+    const handlers = handlersFunc(["move"]);
+    const {on, actionKeys, getAction} = handlers;
 
     const nextIndex = (ind) => FIRST_PLAYER + SECOND_PLAYER - ind;
 
@@ -39,11 +49,18 @@ export function presenter(settings, logger, trans) {
         const res = eng.move(y, playerIndex);
         if (res > 0) {
             const iter = eng.iterateHorizontal();
-            drawer.drawField(iter);
+            if (playerIndex === myIndex) {
+                handlers.call("move", {y, index: myIndex});
+            }
+            if (drawer) {
+                drawer.drawField(iter);
+            }
             if (res === FIRST_PLAYER || res === GAME_DRAW || res === SECOND_PLAYER) {
                 const firstMessage = await getFirstMessage(res);
                 const secondMessage = await getSecondMessage(res);
-                drawer.onGameEndDraw(res, firstMessage, secondMessage);
+                if (drawer) {
+                    drawer.onGameEndDraw(res, firstMessage, secondMessage);
+                }
             }
             if (settings.mode === "hotseat") {
                 myIndex = nextIndex(myIndex);
@@ -51,11 +68,19 @@ export function presenter(settings, logger, trans) {
         }
     };
 
+    const externalMove = (data) => tryMove(data.y, data.index, externalDrawer);
+
+    const myMove = (y) => tryMove(y, getMyIndex(), externalDrawer);
+
     const {width, height, iterateHorizontal} = eng;
 
     return {
+        on, actionKeys, getAction,
         getMyIndex,
         tryMove,
+        setDrawer,
+        externalMove,
+        myMove,
         iterateHorizontal,
         width,
         height

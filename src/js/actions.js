@@ -2,9 +2,7 @@
 
 function init(game) {
     return {
-        "player": (data) => game.testSecret(data),
-        "sendSecret": (data) => game.tellSecret(data),
-        "sendAnswer": (data) => game.takeResp(data)
+        "move": (data) => game.externalMove(data)
     };
 }
 

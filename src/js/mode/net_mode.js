@@ -58,6 +58,8 @@ export default async function netMode(window, document, settings, gameFunction, 
 
     const connection = broadcastConnectionFunc(myId, networkLogger, gameChannel);
     const gameInitPromise = Promise.withResolvers();
+    const p = presenter(settings, logger, trans);
+
     connection.on("gameinit", (data) => {
         logger.log("gameinit1");
         gameInitPromise.resolve(data);
@@ -73,16 +75,15 @@ export default async function netMode(window, document, settings, gameFunction, 
     logger.log("connected");
     openCon.sendRawAll("join", {});
 
-    const p = presenter(settings, logger, trans);
-    draw(window, document, settings, p, logger);
+    const dd = draw(window, document, settings, p, logger);
+    p.setDrawer(dd);
 
-    const game = gameFunction(window, document, settings);
-    const actions = actionsFunc(game);
+    const actions = actionsFunc(p);
     const gameHandler = actionToHandler(actions);
     openCon.registerHandler(gameHandler);
-    setupGameToConnectionSend(game, openCon, networkLogger, Object.keys(actions));
+    setupGameToConnectionSend(p, openCon, networkLogger, Object.keys(actions));
 
     await gameInitPromise.promise;
     removeElem(code);
-    return game;
+    return p;
 }
