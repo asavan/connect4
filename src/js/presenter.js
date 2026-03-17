@@ -1,21 +1,29 @@
 import {engine, FIRST_PLAYER, GAME_DRAW, SECOND_PLAYER} from "./rules.js";
-import {handlersFunc} from "netutils";
+import {handlersFunc, assert} from "netutils";
 
 export function presenter(settings, logger, trans) {
     let myIndex = settings.myIndex;
     const initArr = Array(settings.width).fill(1);
 
     let externalDrawer = null;
+    let gameStarted = false;
+
+    const isStarted = () => gameStarted;
+    const start = () => {
+        gameStarted = true;
+    };
 
     const setDrawer = (d) => {
         externalDrawer = d;
     };
 
-    const eng = engine(initArr, settings.height, settings.maxLen, logger, (cond) => {
-        if (!cond) {
-            throw Error("Bad happen");
-        }
-    });
+    let eng = engine(initArr, settings.height, settings.maxLen, logger, assert);
+
+    const initGame = (data) => {
+        eng = engine(data.field, data.height, data.maxLen, logger, assert);
+        myIndex = data.index;
+        gameStarted = true;
+    };
 
     const handlers = handlersFunc(["move"]);
     const {on, actionKeys, getAction} = handlers;
@@ -42,6 +50,15 @@ export function presenter(settings, logger, trans) {
             return await trans.t("good");
         }
         return await trans.t("lost");
+    };
+
+    const tryDraw = () => {
+        if (externalDrawer) {
+            const iter = eng.iterateHorizontal();
+            externalDrawer.drawField(iter);
+        } else {
+            logger.log("No drawer");
+        }
     };
 
 
@@ -74,10 +91,22 @@ export function presenter(settings, logger, trans) {
 
     const {width, height, iterateHorizontal} = eng;
 
+    const initInfo = () => ({
+        field: eng.compressedField(),
+        height: eng.height(),
+        maxLen: eng.getMaxLen(),
+        index: nextIndex(getMyIndex())
+    });
+
     return {
         on, actionKeys, getAction,
+        initGame,
+        tryDraw,
         getMyIndex,
         tryMove,
+        initInfo,
+        isStarted,
+        start,
         setDrawer,
         externalMove,
         myMove,

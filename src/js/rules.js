@@ -8,6 +8,16 @@ export const DEFAULT_FIELD = [1, 1, 1, 1, 1, 1, 1];
 export const DEFAULT_ROWS = 6;
 
 
+export function arrToInt(arr) {
+    let res = 1;
+    for (const el of arr) {
+        res = res << 1;
+        res |= (el === SECOND_PLAYER);
+    }
+    return res;
+}
+
+
 export function parseIntToArr(num) {
     const binaryString = num.toString(2);
     return binaryString.split("").slice(1).map((x) => Number.parseInt(x, 10) + 1);
@@ -170,12 +180,17 @@ export function engine(intArr, rows, maxLen, logger, assert) {
 
     const width = () => cols;
     const height = () => rows;
+    const getMaxLen = () => maxLen;
+
+    const compressedField = () => matrix.map(arrToInt);
 
     return {
         cell,
         checkWinAfterMove,
         move,
+        getMaxLen,
         iterateHorizontal,
+        compressedField,
         width,
         height
     };

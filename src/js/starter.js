@@ -14,7 +14,7 @@ export default async function starter(window, document) {
     if (settings.mode === "net") {
         const netMode = await import("./mode/net_mode.js");
         netMode.default(window, document, settings, gameFunction, trans);
-    } if (settings.mode === "hotseat") {
+    } else if (settings.mode === "hotseat") {
         const hotSeatMode = await import("./mode/hotseat.js");
         hotSeatMode.default(window, document, settings, trans);
     } else if (settings.mode === "ai") {

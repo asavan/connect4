@@ -1,6 +1,6 @@
 export default {
     modes: ["net", "ai", "hotseat", "server"],
-    mode: "hotseat",
+    mode: "net",
     channelTypes: ["socket", "supa", "fake", "auto", "auto", "autocs", "none"],
     channelType: "autocs",
     wsPort : 8088,

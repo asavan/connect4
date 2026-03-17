@@ -61,13 +61,17 @@ export default async function netMode(window, document, settings, gameFunction, 
     const p = presenter(settings, logger, trans);
 
     connection.on("gameinit", (data) => {
-        logger.log("gameinit1");
+        if (!p.isStarted()) {
+            p.initGame(data.data);
+            p.tryDraw();
+        }
         gameInitPromise.resolve(data);
     });
 
     connection.on("join", (data) => {
         logger.log("join2");
-        openCon.sendRawAll("gameinit", {});
+        openCon.sendRawAll("gameinit", p.initInfo());
+        p.start();
         gameInitPromise.resolve(data);
     });
 
@@ -82,8 +86,9 @@ export default async function netMode(window, document, settings, gameFunction, 
     const gameHandler = actionToHandler(actions);
     openCon.registerHandler(gameHandler);
     setupGameToConnectionSend(p, openCon, networkLogger, Object.keys(actions));
-
+    logger.log("net11");
     await gameInitPromise.promise;
+    logger.log("net12");
     removeElem(code);
     return p;
 }

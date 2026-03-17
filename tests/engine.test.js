@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import {
     DEFAULT_ROWS, DEFAULT_FIELD,
     EMPTY_CELL, engine, FIRST_PLAYER, lastNonZero, parseIntArr, parseIntToArr, SECOND_PLAYER, VALIDATION_ERROR,
-    GAME_CONTINUE
+    GAME_CONTINUE, arrToInt
 }
     from "../src/js/rules.js";
 
@@ -37,6 +37,12 @@ test("parseIntToArr", () => {
 test("parseIntArr", () => {
     const arr = parseIntArr(DEFAULT_FIELD);
     assert.deepEqual(arr, [[], [], [], [], [], [], []]);
+});
+
+
+test("arrToInt", () => {
+    const num = arrToInt([1, 2]);
+    assert.strictEqual(num, 5);
 });
 
 
