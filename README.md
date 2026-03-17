@@ -9,4 +9,4 @@
 ## Demo
 play                                          |  win                        
 :--------------------------------------------:|:-------------------------:
-![Play](/screenshots/screen1.png "play")      |  ![Win](/screenshots/screen2.png "Win")
+![Play](/screenshots/screen1.jpg "play")      |  ![Win](/screenshots/screen2.jpg "Win")
