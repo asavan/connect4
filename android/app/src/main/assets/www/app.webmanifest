@@ -1,6 +1,6 @@
 {
-    "name": "asavan mastermind game",
-	"short_name": "mastermind",
+    "name": "asavan connect4 game",
+	"short_name": "connect4",
     "icons": [
         {
           "src": "./images/icon512.png",

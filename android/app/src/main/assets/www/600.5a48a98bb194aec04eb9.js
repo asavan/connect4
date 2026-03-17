@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkconnect4=self.webpackChunkconnect4||[]).push([[600],{600(e){e.exports=JSON.parse('{"game":"Коннект 4","move":"Ходи!","begin":"Игра началась. ","lost":"Потрачено","win":"Победа","draw":"Ничья","wait":"Ждем оппонента","good":"А ты хорош!","next":"В другой раз повезет","loose":"Ты проиграл"}')}}]);

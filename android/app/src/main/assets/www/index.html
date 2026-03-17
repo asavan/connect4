@@ -2,31 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Mastermind</title>
+    <title>connect4</title>
     <meta name="theme-color" content="#ffffff">
-    <meta name="description" content="Mastermind game">
+    <meta name="description" content="connect4 game">
     <link id="favicon" rel="icon" href="./images/icon.svg" sizes="any" type="image/svg+xml">
-    <link rel="manifest" href="./manifest.json">
+    <link rel="manifest" href="./app.webmanifest">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="./images/icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Roboto+Mono:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
-<script defer src="main.dc17c61b613973dee0d1.js"></script><style type="text/css">*{margin:0;padding:0}:root{--main-color:#f0f8ff;--comp-color:red;--player-color:#4169e1;--field-size:4}body,html{height:100%}body{display:flex;flex-direction:column}.content{flex:1 0 auto}footer{flex:0 0 auto}.qrcode.big{left:0;position:absolute;top:0;width:calc(var(--field-size)*100px + 50px)}.qrcode{margin:auto;width:300px}@media (max-width:700px){.hidden2{display:none}}.install{background-color:var(--main-color);border:0;cursor:pointer;font:700 24px/100px Tahoma,sans-serif;height:100px;padding:0;text-align:center;width:100%}img{display:block;height:100px;margin-left:auto;margin-right:auto;max-width:100%}@media (max-width:450px){.hidden2{display:none}}.overlay{background:rgba(0,0,0,.7);inset:0;opacity:0;position:fixed;transition:opacity .7s;visibility:hidden}.overlay.show{opacity:1;visibility:visible}.popup{background:#fff;border-radius:5px;margin:70px auto;padding:20px;position:relative;transition:all 5s ease-in-out;width:80%}.popup h2{color:#333;font-family:Tahoma,Arial,sans-serif;margin-top:0}.popup .close{color:#333;font-size:30px;font-weight:700;position:absolute;right:30px;text-decoration:none;top:20px;transition:all .4s}.popup .close:hover{color:var(--player-color)}.popup .content{max-height:30%;overflow:auto}.check-div{flex:0 0 auto;text-align:center}.input-div{display:grid;grid-template-columns:repeat(var(--field-size),1fr);grid-gap:5px;margin-left:5px;margin-right:5px}input{border:none;border-radius:10%;font-family:Fjalla One,sans-serif;font-size:28px;height:100%;object-fit:contain;object-position:center;outline:1px solid #000;text-align:center;width:100%}input::placeholder{font-size:10px;opacity:.2}.square{aspect-ratio:1/1;border:none;text-align:center}input:focus{outline:2px solid #3494fe}.request{font-style:italic}.app{display:flex;flex-direction:column;margin:auto;max-width:300px}.result{column-count:2;column-fill:auto;flex:1 0 auto;height:200px;list-style-type:none}.row{display:flex;font-family:Roboto Mono,monospace;font-size:36px;justify-content:space-between}.hidden{display:none}</style></head>
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Roboto+Mono:ital,wght@0,600;1,400&display=swap" rel="stylesheet" crossorigin="anonymous">
+<script type="module" src="main.657f652cc3b97069ef13.js"></script><style type="text/css">*{box-sizing:border-box;margin:0;padding:0}:root{--main-color:#f0f8ff;--first-player:red;--second-player:orange;--field-width:7;--field-height:6}body,html{height:100%}body{display:flex;flex-direction:column}.content{flex:1 0 auto}footer{flex:0 0 auto}.qrcode.big{left:0;position:absolute;top:0;width:calc(var(--field-size)*100px + 50px)}.qrcode{margin:auto;width:300px}@media (max-width:700px){.hidden2{display:none}}.install{background-color:var(--main-color);border:0;cursor:pointer;font:700 24px/100px Tahoma,sans-serif;height:100px;padding:0;text-align:center;width:100%}img{display:block;height:100px;margin-left:auto;margin-right:auto;max-width:100%}@media (max-width:450px){.hidden2{display:none}}.overlay{background:rgba(0,0,0,.7);inset:0;opacity:0;position:fixed;transition:opacity .7s;visibility:hidden}.overlay.show{opacity:1;visibility:visible}.popup{background:#fff;border-radius:5px;margin:70px auto;padding:20px;position:relative;transition:all 5s ease-in-out;width:80%}.popup h2{color:#333;font-family:Tahoma,Arial,sans-serif;margin-top:0}.popup .close{color:#333;font-size:30px;font-weight:700;position:absolute;right:30px;text-decoration:none;top:20px;transition:all .4s}.popup .close:hover{color:var(--player-color)}.popup .content{max-height:30%;overflow:auto}.square{aspect-ratio:1/1;border:none;text-align:center}.field{background-color:#4169e1;border:1px solid #000;cursor:pointer;display:grid;gap:10px;grid-template-columns:repeat(var(--field-width),1fr);grid-template-rows:repeat(var(--field-height),1fr);max-width:500px;padding:10px;-webkit-tap-highlight-color:transparent!important;outline:none!important}.cell{aspect-ratio:1/1;background-color:#d3d3d3;border:1px solid #ccc;border-radius:50%;max-width:70px;padding:10px;pointer-events:none;text-align:center}.first{background-color:var(--first-player)}.second{background-color:var(--second-player)}.empty{background-color:var(--main-color)}.disabled{cursor:not-allowed}.hidden{display:none}</style></head>
 <body>
 <div class="content">
     <div class="app">
-        <ul class="result">
-
-        </ul>
-        <div class="check-div">
-            <div class="input-div">
-            </div>
-            <div class="log"></div>
-        </div>
+        <div class="field"></div>
     </div>
-    <div class="qrcode"></div>
+    <div class="qrcontainer"></div>
     <div class="qrcontainerserver"></div>
     <div id="popup1" class="overlay">
         <div class="popup">
