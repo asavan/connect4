@@ -8,9 +8,8 @@ import {
     removeElem,
     netObj
 } from "netutils";
-import {engine} from "../rules.js";
 import {draw} from "../layout.js";
-
+import {presenter} from "../presenter.js";
 
 function makeQr(window, document, settings, serverId) {
     const staticHost = netObj.getHostUrl(settings, window.location);
@@ -45,7 +44,7 @@ function setupGameToConnectionSend(game, con, logger, actionKeys) {
     }
 }
 
-export default async function netMode(window, document, settings, gameFunction) {
+export default async function netMode(window, document, settings, gameFunction, trans) {
     const logger = loggerFunc(document, settings, 3);
     const myId = netObj.getMyId(window, settings, Math.random);
     logger.log("id", myId);
@@ -74,14 +73,8 @@ export default async function netMode(window, document, settings, gameFunction) 
     logger.log("connected");
     openCon.sendRawAll("join", {});
 
-    const initArr = Array(settings.width).fill(1);
-
-    const eng = engine(initArr, settings.height, settings.maxLen, logger, (cond) => {
-        if (!cond) {
-            throw Error("Bad happen");
-        }
-    });
-    draw(window, document, settings, eng, logger);
+    const p = presenter(settings, logger, trans);
+    draw(window, document, settings, p, logger);
 
     const game = gameFunction(window, document, settings);
     const actions = actionsFunc(game);

@@ -1,9 +1,10 @@
 export default {
-    modes: ["net", "ai", "server"],
-    mode: "net",
+    modes: ["net", "ai", "hotseat", "server"],
+    mode: "hotseat",
     channelTypes: ["socket", "supa", "fake", "auto", "auto", "autocs", "none"],
     channelType: "autocs",
     wsPort : 8088,
+    myIndex: 1,
     color: "blue",
     size: 4,
     logger: true,

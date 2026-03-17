@@ -1,0 +1,12 @@
+{
+  "game": "Connect 4",
+  "move": "Move!",
+  "begin": "The game has begun. ",
+  "prepare": "Prepare to die!",
+  "lost": "Wasted",
+  "win": "Win",
+  "draw": "Draw",
+  "good": "You good!",
+  "next": "Next time you'll be lucky",
+  "loose": "You loose"
+}
