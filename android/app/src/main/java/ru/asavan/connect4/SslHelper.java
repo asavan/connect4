@@ -1,4 +1,4 @@
-package ru.asavan.mastermind;
+package ru.asavan.connect4;
 
 import android.content.Context;
 import android.util.Log;

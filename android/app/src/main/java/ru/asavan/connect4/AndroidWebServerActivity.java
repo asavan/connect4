@@ -1,4 +1,4 @@
-package ru.asavan.mastermind;
+package ru.asavan.connect4;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,11 +11,11 @@ import java.util.Map;
 public class AndroidWebServerActivity extends Activity {
     private static final int STATIC_CONTENT_PORT = 8080;
     private static final int WEB_SOCKET_PORT = 8088;
-    private static final String WEB_GAME_URL = "https://asavan.github.io/mastermind/";
+    private static final String WEB_GAME_URL = "https://asavan.github.io/connect4/";
     public static final String LOCAL_IP = "127.0.0.1";
     public static final String LOCALHOST = "localhost";
     public static final String WEB_VIEW_URL = "file:///android_asset/www/index.html";
-    public static final String MAIN_LOG_TAG = "MASTERMIND_TAG";
+    public static final String MAIN_LOG_TAG = "connect4_TAG";
     private static final boolean secure = false;
 
     private BtnUtils btnUtils;

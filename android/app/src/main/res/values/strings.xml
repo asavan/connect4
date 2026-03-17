@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mastermind game</string>
+    <string name="app_name">connect4 game</string>
 
     <string name="asset_statements" translatable="false">
     [{

@@ -1,4 +1,4 @@
-package ru.asavan.mastermind;
+package ru.asavan.connect4;
 
 public class HostUtils {
     private final int static_content_port;

@@ -1,4 +1,4 @@
-package ru.asavan.mastermind;
+package ru.asavan.connect4;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

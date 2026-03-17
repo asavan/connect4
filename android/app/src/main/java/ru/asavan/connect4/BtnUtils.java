@@ -1,4 +1,4 @@
-package ru.asavan.mastermind;
+package ru.asavan.connect4;
 
 import android.app.Activity;
 import android.content.Context;
