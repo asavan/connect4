@@ -21,8 +21,7 @@ function drawIter(iter, logger, document, field) {
     }
 }
 
-export function getClickIndex(e, count, width) {
-    console.log(e.offsetX, count, width);
+function getClickIndex(e, count, width) {
     return Math.floor((e.offsetX + 1) * count / width);
 }
 

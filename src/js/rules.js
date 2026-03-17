@@ -49,14 +49,14 @@ export function engine(intArr, rows, maxLen, logger, assert) {
     };
     const cm = countMoves();
     const diff = cm.first - cm.second;
-    logger.log("diff", diff);
+    // logger.log("diff", diff);
     assert(diff >= 0 && diff < 2, "Bad board");
     let curIndex = FIRST_PLAYER;
     if (cm.first > cm.second) {
         curIndex = SECOND_PLAYER;
     }
     let status = GAME_CONTINUE;
-    logger.log(maxLen);
+    // logger.log(maxLen);
     const inBounds = (x, y) => x >= 0 && y >= 0 && y < cols && x < rows;
     const cell = (x, y) => {
         if (!inBounds(x, y)) {
