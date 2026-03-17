@@ -26,52 +26,34 @@ public class AndroidWebServerActivity extends Activity {
         setContentView(R.layout.main);
         btnUtils = new BtnUtils(this, STATIC_CONTENT_PORT, WEB_SOCKET_PORT, secure);
         try {
-            addButtons(IpUtils.getIPAddressSafe());
+            HostUtils hostUtils = new HostUtils(STATIC_CONTENT_PORT, WEB_SOCKET_PORT, secure);
+            addButtons(IpUtils.getIPAddressSafe(), hostUtils);
             Map<String, String> mainParams = new LinkedHashMap<>();
-            mainParams.put("mode", "ai");
-            btnUtils.launchWebView(WEB_VIEW_URL, mainParams);
+            mainParams.put("mode", "hotseat");
+            btnUtils.launchTwa(hostUtils.getStaticHost(LOCALHOST), mainParams);
         } catch (Exception e) {
             Log.e(MAIN_LOG_TAG, "main", e);
         }
     }
 
-    private void addButtons(String formattedIpAddress) {
-        HostUtils hostUtils = new HostUtils(STATIC_CONTENT_PORT, WEB_SOCKET_PORT, secure);
+    private void addButtons(String formattedIpAddress, HostUtils hostUtils) {
         final String host = hostUtils.getStaticHost(formattedIpAddress);
         final String webSocketHost = hostUtils.getSocketHost(formattedIpAddress);
         {
-            Map<String, String> mainParams = new LinkedHashMap<>();
-            mainParams.put("mode", "ai");
-            btnUtils.addButtonTwa(WEB_GAME_URL, mainParams, R.id.button3);
-            btnUtils.addButtonWebView(WEB_VIEW_URL, mainParams, R.id.button5);
-            btnUtils.addButtonWebView(hostUtils.getStaticHost(LOCAL_IP), mainParams, R.id.button6);
-        }
-        {
             Map<String, String> b = new LinkedHashMap<>();
-            b.put("color", "blue");
             b.put("wh", webSocketHost);
             b.put("sh", host);
             b.put("mode", "net");
             btnUtils.addButtonBrowser(host, b, R.id.button1);
             btnUtils.addButtonTwa(hostUtils.getStaticHost(LOCALHOST), b, R.id.button4, host);
         }
-        {
-            Map<String, String> b = new LinkedHashMap<>();
-            b.put("color", "blue");
-            b.put("wh", hostUtils.getSocketHost(LOCAL_IP));
-            b.put("sh", host);
-            b.put("mode", "net");
-            btnUtils.addButtonWebView(hostUtils.getStaticHost(LOCALHOST), b, R.id.button7);
-            btnUtils.addButtonWebView(hostUtils.getStaticHost(LOCAL_IP), b, R.id.button8);
-            btnUtils.addButtonWebView(WEB_VIEW_URL, b, R.id.button9);
-        }
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (btnUtils != null) {
             btnUtils.onDestroy();
         }
+        super.onDestroy();
     }
 }
