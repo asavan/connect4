@@ -25,7 +25,7 @@ export function presenter(settings, logger, trans) {
         gameStarted = true;
     };
 
-    const handlers = handlersFunc(["move"]);
+    const handlers = handlersFunc(["move", "reload"]);
     const {on, actionKeys, getAction} = handlers;
 
     const nextIndex = (ind) => FIRST_PLAYER + SECOND_PLAYER - ind;
@@ -58,6 +58,14 @@ export function presenter(settings, logger, trans) {
             externalDrawer.drawField(iter);
         } else {
             logger.log("No drawer");
+        }
+    };
+
+    const tryRestartView = () => {
+        if (externalDrawer) {
+            externalDrawer.onRoundStart();
+        } else {
+            logger.log("No drawer2");
         }
     };
 
@@ -98,10 +106,26 @@ export function presenter(settings, logger, trans) {
         index: nextIndex(getMyIndex())
     });
 
+    const reloadClient = () => {
+        myIndex = nextIndex(myIndex);
+        eng = engine(initArr, settings.height, settings.maxLen, logger, assert);
+        const info = initInfo();
+        handlers.call("reload", info);
+        tryRestartView();
+        tryDraw();
+    };
+
+    const onReloadSignal = (data) => {
+        initGame(data);
+        tryRestartView();
+        tryDraw();
+    };
+
     return {
         on, actionKeys, getAction,
         initGame,
         tryDraw,
+        nextIndex,
         getMyIndex,
         tryMove,
         initInfo,
@@ -110,6 +134,8 @@ export function presenter(settings, logger, trans) {
         setDrawer,
         externalMove,
         myMove,
+        reloadClient,
+        onReloadSignal,
         iterateHorizontal,
         width,
         height

@@ -1,19 +1,17 @@
 "use strict";
 
-import {delay} from "netutils";
-
-const randomInteger = (min, max) => {
-    const rand = min + Math.random() * (max - min);
-    return Math.floor(rand);
-};
-
+import {delay, random} from "netutils";
 
 function simpleBot(settings, game) {
+
+    // const myIndex = game.nextIndex(game.getMyIndex());
+    // const data = game.initInfo();
+
     const result = [];
     for (let i = 0; i < settings.size; i++) {
-        let cand = randomInteger(settings.min, settings.max + 1);
+        let cand = random.randomInteger(settings.min, settings.max + 1, Math.random);
         while (!settings.repeat && result.includes(cand)) {
-            cand = randomInteger(settings.min, settings.max + 1);
+            cand = random.randomInteger(settings.min, settings.max + 1, Math.random);
         }
         result.push(cand);
     }

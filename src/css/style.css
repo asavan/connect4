@@ -133,6 +133,10 @@ img {
   /* Here pay attention to modify the default outer border properties, without border */
 }
 
+.app {
+  max-width: 520px;
+}
+
 .field {
   display: grid;
   grid-template-columns: repeat(var(--field-width), 1fr);
@@ -172,6 +176,20 @@ img {
 
 .disabled {
   cursor: not-allowed;
+}
+
+.reload {
+  margin-top: 10px;
+  max-width: 500px;
+  background-color: royalblue;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100px;
 }
 
 .hidden {

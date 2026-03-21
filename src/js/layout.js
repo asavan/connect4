@@ -38,31 +38,50 @@ function setupOverlay(document, onClose) {
     return overlay;
 }
 
-function onGameEndDraw(res, overlay, field, message, messageSmall) {
+function onGameEndDraw(res, overlay, field, reload, message, messageSmall) {
     field.classList.add("disabled");
     const h2 = overlay.querySelector("h2");
     h2.textContent = message;
     const content = overlay.querySelector(".content");
     content.textContent = messageSmall;
     overlay.classList.add("show");
+    reload.classList.remove("hidden");
+}
+
+function onRoundStart(overlay, field, reload) {
+    field.classList.remove("disabled");
+    overlay.classList.remove("show");
+    reload.classList.add("hidden");
 }
 
 export function draw(window, document, settings, presenter, logger) {
     document.documentElement.style.setProperty("--field-width", presenter.width());
     document.documentElement.style.setProperty("--field-height", presenter.height());
     const field = document.querySelector(".field");
+    const reload = document.querySelector(".reload");
+
     field.classList.remove("disabled");
+    reload.classList.add("hidden");
     const overlay = setupOverlay(document);
     const wF = field.offsetWidth;
     const drawer = {
         drawField: (iter) => drawIter(iter, logger, document, field),
-        onGameEndDraw: (res, message, messageSmall) => onGameEndDraw(res, overlay, field, message, messageSmall)
+        onRoundStart: () => onRoundStart(overlay, field, reload),
+        onGameEndDraw:
+            (res, message, messageSmall) =>
+                onGameEndDraw(res, overlay, field, reload, message, messageSmall)
     };
     field.addEventListener("click", (e) => {
         const ind = getClickIndex(e, presenter.width(), wF);
         logger.log("index", ind);
         presenter.tryMove(ind, presenter.getMyIndex(), drawer);
     });
+
+    reload.addEventListener("click", () => {
+        logger.log("reload pressed");
+        presenter.reloadClient();
+    });
+
     logger.log(field);
     drawer.drawField(presenter.iterateHorizontal());
     return drawer;

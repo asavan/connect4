@@ -2,7 +2,8 @@
 
 function init(game) {
     return {
-        "move": (data) => game.externalMove(data)
+        "move": (data) => game.externalMove(data),
+        "reload": (data) => game.onReloadSignal(data)
     };
 }
 
