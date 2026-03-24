@@ -19,7 +19,7 @@ export default async function starter(window, document) {
         hotSeatMode.default(window, document, settings, trans);
     } else if (settings.mode === "ai") {
         const ai = await import("./mode/ai.js");
-        await ai.default(window, document, settings, gameFunction);
+        await ai.default(window, document, settings, gameFunction, trans);
     } else {
         assert(false, "Unsupported mode");
     }
