@@ -52,18 +52,20 @@ export function presenter(settings, logger, trans) {
         return await trans.t("lost");
     };
 
-    const tryDraw = () => {
-        if (externalDrawer) {
+    const tryDraw = (drawer) => {
+        drawer = drawer || externalDrawer;
+        if (drawer) {
             const iter = eng.iterateHorizontal();
-            externalDrawer.drawField(iter);
+            drawer.drawField(iter);
         } else {
             logger.log("No drawer");
         }
     };
 
-    const tryRestartView = () => {
-        if (externalDrawer) {
-            externalDrawer.onRoundStart();
+    const tryRestartView = (drawer) => {
+        drawer = drawer || externalDrawer;
+        if (drawer) {
+            drawer.onRoundStart();
         } else {
             logger.log("No drawer2");
         }
@@ -106,13 +108,13 @@ export function presenter(settings, logger, trans) {
         index: nextIndex(getMyIndex())
     });
 
-    const reloadClient = () => {
+    const reloadClient = (drawer) => {
         myIndex = nextIndex(myIndex);
         eng = engine(initArr, settings.height, settings.maxLen, logger, assert);
         const info = initInfo();
         handlers.call("reload", info);
-        tryRestartView();
-        tryDraw();
+        tryRestartView(drawer);
+        tryDraw(drawer);
     };
 
     const onReloadSignal = (data) => {

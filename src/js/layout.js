@@ -79,7 +79,7 @@ export function draw(window, document, settings, presenter, logger) {
 
     reload.addEventListener("click", () => {
         logger.log("reload pressed");
-        presenter.reloadClient();
+        presenter.reloadClient(drawer);
     });
 
     logger.log(field);

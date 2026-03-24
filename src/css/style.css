@@ -179,6 +179,7 @@ img {
 }
 
 .reload {
+  cursor: pointer;
   margin-top: 10px;
   max-width: 500px;
   background-color: royalblue;

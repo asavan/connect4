@@ -1,37 +1,40 @@
 "use strict";
 
-import {delay, random} from "netutils";
+/*
+emcc -s EXPORT_ES6=1 -s ENVIRONMENT="web"
+-s EXPORTED_FUNCTIONS="['_init','_getBestMove','_playMove','_resetBoard','_getBoardState','_isGameOver']"
+-s EXPORTED_RUNTIME_METHODS="['cwrap']"
+-o connect4_solver.js connect4_solver.cpp
+*/
+import createModule from "../lib/ai_generated/connect4_solver.js";
 
-function simpleBot(settings, game) {
 
-    // const myIndex = game.nextIndex(game.getMyIndex());
-    // const data = game.initInfo();
+export default async function ai(window, document, settings, gameFunction) {
 
-    const result = [];
-    for (let i = 0; i < settings.size; i++) {
-        let cand = random.randomInteger(settings.min, settings.max + 1, Math.random);
-        while (!settings.repeat && result.includes(cand)) {
-            cand = random.randomInteger(settings.min, settings.max + 1, Math.random);
-        }
-        result.push(cand);
+    console.log("Start", window, document, settings, gameFunction);
+    const module = await createModule();
+
+    // await delay(500);
+
+    const aiPlayer = 0;
+    console.log("Start1", module);
+    const exports = module;
+    if (!exports) {
+        console.log("Exit", module);
+        return;
     }
 
-    game.tellSecret(result.join(""));
-    game.setMyNumber(result.join(""));
+    const isOver = exports._isGameOver();
 
-    const makeMove = async function (num) {
-        const res = await game.testSecret(num);
-        await delay(200);
-        await game.takeResp(res);
-        return res;
-    };
+    exports._init();
+    exports._resetBoard();
 
-    return {makeMove};
-}
+    console.log("Start2", Date.now());
+    console.time("begin");
+    const move = exports._getBestMove(aiPlayer);
+    console.log("Start3", Date.now());
 
-export default function ai(window, document, settings, gameFunction) {
-    const game = gameFunction(window, document, settings);
-    const bot = simpleBot(settings, game);
-    game.on("player", (move) => bot.makeMove(move));
-    return game;
+    console.timeEnd("begin");
+    console.log("End", move, isOver);
+    // return ;
 }

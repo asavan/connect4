@@ -19,12 +19,7 @@ export default async function starter(window, document) {
         hotSeatMode.default(window, document, settings, trans);
     } else if (settings.mode === "ai") {
         const ai = await import("./mode/ai.js");
-        const g = await ai.default(window, document, settings, gameFunction);
-        g.on("gameover", (score) => {
-            console.log("Score", score);
-            const btnAdd = document.querySelector(".butInstall");
-            btnAdd.classList.remove("hidden2");
-        });
+        await ai.default(window, document, settings, gameFunction);
     } else {
         assert(false, "Unsupported mode");
     }

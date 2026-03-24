@@ -1,7 +1,5 @@
+import commonCopy from "./common_import.js";
 import { webpackDev } from "devdeps";
 
-const config = () => {
-    return webpackDev();
-};
-
-export default config;
+const devConfig = () => webpackDev(commonCopy);
+export default devConfig;

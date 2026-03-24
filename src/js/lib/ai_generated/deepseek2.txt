@@ -1,0 +1,416 @@
+// connect4_solver.cpp
+// Compile: emcc -O3 -s WASM=1 -s EXPORTED_FUNCTIONS="['_init','_getBestMove','_playMove','_resetBoard','_getBoardState','_isGameOver']" -s EXPORTED_RUNTIME_METHODS="['cwrap']" -o connect4_solver.js connect4_solver.cpp
+
+#include <cstdint>
+#include <cstring>
+#include <random>
+#include <vector>
+#include <algorithm>
+#include <unordered_map>
+
+// Constants
+const int WIDTH = 7;
+const int HEIGHT = 6;
+const int CELLS = WIDTH * HEIGHT;
+using Bitboard = uint64_t;
+
+// ----------------------------------------------------------------------
+// Zobrist random numbers for perfect hashing
+// ----------------------------------------------------------------------
+class Zobrist {
+public:
+    static uint64_t cell[WIDTH][HEIGHT][2];
+    static uint64_t side;
+    static bool initialized;
+    
+    static void init() {
+        if (initialized) return;
+        std::mt19937_64 rng(123456789); // Fixed seed for reproducibility
+        for (int c = 0; c < WIDTH; ++c)
+            for (int r = 0; r < HEIGHT; ++r)
+                for (int p = 0; p < 2; ++p)
+                    cell[c][r][p] = rng();
+        side = rng();
+        initialized = true;
+    }
+};
+
+bool Zobrist::initialized = false;
+uint64_t Zobrist::cell[WIDTH][HEIGHT][2];
+uint64_t Zobrist::side;
+
+// ----------------------------------------------------------------------
+// Connect 4 Board with incremental Zobrist hash
+// ----------------------------------------------------------------------
+class ConnectFour {
+public:
+    Bitboard position[2];   // discs of player 0 and player 1
+    Bitboard mask;          // all occupied cells
+    int height[WIDTH];      // number of discs per column
+    int moves;              // total discs on board
+    uint64_t hash;          // Zobrist hash of position (without side to move)
+    
+    ConnectFour() { reset(); }
+    
+    void reset() {
+        position[0] = position[1] = mask = 0;
+        for (int i = 0; i < WIDTH; ++i) height[i] = 0;
+        moves = 0;
+        hash = 0;
+    }
+    
+    bool canPlay(int col) const { return height[col] < HEIGHT; }
+    
+    void play(int col, int player) {
+        int row = height[col];
+        Bitboard bit = 1ULL << (col + row * WIDTH);
+        position[player] ^= bit;
+        mask ^= bit;
+        height[col]++;
+        moves++;
+        hash ^= Zobrist::cell[col][row][player];
+    }
+    
+    void undo(int col, int player) {
+        height[col]--;
+        int row = height[col];
+        Bitboard bit = 1ULL << (col + row * WIDTH);
+        position[player] ^= bit;
+        mask ^= bit;
+        moves--;
+        hash ^= Zobrist::cell[col][row][player];
+    }
+    
+    bool isWin(int player) const {
+        Bitboard bb = position[player];
+        // Horizontal
+        Bitboard m = bb & (bb >> 1);
+        if (m & (m >> 2)) return true;
+        // Vertical
+        m = bb & (bb >> WIDTH);
+        if (m & (m >> (2 * WIDTH))) return true;
+        // Diagonal /
+        m = bb & (bb >> (WIDTH - 1));
+        if (m & (m >> (2 * (WIDTH - 1)))) return true;
+        // Diagonal \
+        m = bb & (bb >> (WIDTH + 1));
+        if (m & (m >> (2 * (WIDTH + 1)))) return true;
+        return false;
+    }
+    
+    bool isDraw() const { return moves == CELLS; }
+    
+    // Get legal moves, sorted center-first (critical for alpha-beta)
+    std::vector<int> getMoves() const {
+        std::vector<int> moves;
+        // Center-first ordering: 3,2,4,1,5,0,6
+        int order[] = {3, 2, 4, 1, 5, 0, 6};
+        for (int col : order) {
+            if (canPlay(col)) moves.push_back(col);
+        }
+        return moves;
+    }
+    
+    // Get winning move if exists (fast check)
+    int getWinningMove(int player) const {
+        std::vector<int> moves = getMoves();
+        for (int col : moves) {
+            ConnectFour copy = *this;
+            copy.play(col, player);
+            if (copy.isWin(player)) return col;
+        }
+        return -1;
+    }
+    
+    // Heuristic evaluation for move ordering (not used for actual evaluation)
+    int scoreMove(int col, int player) const {
+        if (getWinningMove(player) == col) return 1000000;
+        
+        // Center preference
+        int centerScore = 4 - abs(3 - col);
+        
+        // Check if move creates threats
+        ConnectFour copy = *this;
+        copy.play(col, player);
+        int threatScore = 0;
+        
+        // Count potential winning lines after this move
+        for (int dir = 0; dir < 4; ++dir) {
+            // Simplified threat detection
+        }
+        
+        return centerScore * 10 + threatScore;
+    }
+};
+
+// ----------------------------------------------------------------------
+// Transposition Table Entry
+// ----------------------------------------------------------------------
+struct TTEntry {
+    int8_t score;      // -2 = unknown, -1 loss, 0 draw, 1 win
+    uint8_t depth;     // depth remaining when stored
+    uint8_t flag;      // 0=exact, 1=lower, 2=upper
+    uint8_t move;      // best move
+};
+
+class TranspositionTable {
+private:
+    static const size_t TABLE_SIZE = 1 << 20; // 1M entries
+    TTEntry table[TABLE_SIZE];
+    
+public:
+    TranspositionTable() { clear(); }
+    
+    void clear() {
+        memset(table, 0, sizeof(table));
+        for (size_t i = 0; i < TABLE_SIZE; ++i) {
+            table[i].score = -2;
+        }
+    }
+    
+    size_t index(uint64_t hash) const {
+        return hash & (TABLE_SIZE - 1);
+    }
+    
+    void store(uint64_t hash, int8_t score, uint8_t depth, uint8_t flag, uint8_t move) {
+        size_t idx = index(hash);
+        // Simple replacement scheme
+        if (table[idx].depth <= depth) {
+            table[idx].score = score;
+            table[idx].depth = depth;
+            table[idx].flag = flag;
+            table[idx].move = move;
+        }
+    }
+    
+    bool lookup(uint64_t hash, uint8_t depth, int8_t& score, uint8_t& move) {
+        size_t idx = index(hash);
+        TTEntry& entry = table[idx];
+        if (entry.score == -2) return false;
+        
+        // Check if entry has sufficient depth
+        if (entry.depth >= depth) {
+            score = entry.score;
+            move = entry.move;
+            return true;
+        }
+        return false;
+    }
+};
+
+// ----------------------------------------------------------------------
+// Perfect Solver using Minimax + Alpha-Beta + Transposition Table
+// ----------------------------------------------------------------------
+class Solver {
+private:
+    TranspositionTable tt;
+    int nodes;
+    int maxDepth;
+    
+public:
+    Solver() : nodes(0), maxDepth(42) {
+        Zobrist::init();
+    }
+    
+    void reset() {
+        tt.clear();
+        nodes = 0;
+    }
+    
+    // Core solving function
+    // Returns score from current player's perspective: 1 = win, 0 = draw, -1 = loss
+    int8_t solve(ConnectFour& board, int player, int8_t alpha, int8_t beta, uint8_t depth) {
+        nodes++;
+        
+        // Check terminal states
+        if (board.isWin(player ^ 1)) return -1;  // Opponent just won
+        if (board.isDraw()) return 0;
+        
+        // Transposition table lookup (include side to move in key)
+        uint64_t key = board.hash ^ (player ? Zobrist::side : 0);
+        int8_t ttScore;
+        uint8_t ttMove;
+        if (tt.lookup(key, maxDepth - depth, ttScore, ttMove)) {
+            return ttScore;
+        }
+        
+        // Check for immediate winning move
+        int winningMove = board.getWinningMove(player);
+        if (winningMove != -1) {
+            tt.store(key, 1, maxDepth - depth, 0, winningMove);
+            return 1;
+        }
+        
+        std::vector<int> moves = board.getMoves();
+        
+        // Move ordering: winning moves first, then heuristic score
+        std::sort(moves.begin(), moves.end(), [&](int a, int b) {
+            int sa = board.scoreMove(a, player);
+            int sb = board.scoreMove(b, player);
+            return sa > sb;
+        });
+        
+        int8_t bestScore = -2;
+        int bestMove = moves[0];
+        
+        for (int col : moves) {
+            board.play(col, player);
+            int8_t score = -solve(board, player ^ 1, -beta, -alpha, depth + 1);
+            board.undo(col, player);
+            
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = col;
+            }
+            
+            alpha = std::max(alpha, score);
+            if (alpha >= beta) break; // Beta cutoff
+        }
+        
+        // Store in transposition table
+        uint8_t flag = 0; // exact score
+        if (bestScore <= alpha) flag = 2; // upper bound
+        if (bestScore >= beta) flag = 1;  // lower bound
+        
+        tt.store(key, bestScore, maxDepth - depth, flag, bestMove);
+        
+        return bestScore;
+    }
+    
+    // Public interface: get best move for given board and player
+    int getBestMove(ConnectFour& board, int player) {
+        reset();
+        
+        // First, check for immediate winning move
+        int winning = board.getWinningMove(player);
+        if (winning != -1) return winning;
+        
+        std::vector<int> moves = board.getMoves();
+        int8_t bestScore = -2;
+        int bestMove = moves[0];
+        
+        // Try each move
+        for (int col : moves) {
+            board.play(col, player);
+            int8_t score = -solve(board, player ^ 1, -1, 1, 1);
+            board.undo(col, player);
+            
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = col;
+                if (bestScore == 1) break; // Winning move found
+            }
+        }
+        
+        return bestMove;
+    }
+    
+    int getNodeCount() const { return nodes; }
+};
+
+// ----------------------------------------------------------------------
+// Global instances for WebAssembly interface
+// ----------------------------------------------------------------------
+ConnectFour board;
+Solver solver;
+
+// ----------------------------------------------------------------------
+// WebAssembly Exported Functions (C-style for JavaScript)
+// ----------------------------------------------------------------------
+extern "C" {
+    
+    // Initialize the solver
+    void init() {
+        Zobrist::init();
+        board.reset();
+        solver.reset();
+    }
+    
+    // Reset the game board
+    void resetBoard() {
+        board.reset();
+        solver.reset();
+    }
+    
+    // Play a move (0-6 columns) for given player (0 or 1)
+    // Returns: 1 if move was valid, 0 otherwise
+    int playMove(int col, int player) {
+        if (col < 0 || col >= WIDTH) return 0;
+        if (!board.canPlay(col)) return 0;
+        if (board.isWin(0) || board.isWin(1)) return 0;
+        if (board.isDraw()) return 0;
+        
+        board.play(col, player);
+        return 1;
+    }
+    
+    // Get the best move for given player (0 or 1)
+    int getBestMove(int player) {
+        // Check if game already over
+        if (board.isWin(0) || board.isWin(1)) return -1;
+        if (board.isDraw()) return -1;
+        
+        return solver.getBestMove(board, player);
+    }
+    
+    // Get current board state as 42-byte array (row-major, bottom row first)
+    // Returns pointer to static buffer (will be overwritten on next call)
+    const char* getBoardState() {
+        static char state[43]; // 42 cells + null terminator
+        for (int r = 0; r < HEIGHT; ++r) {
+            for (int c = 0; c < WIDTH; ++c) {
+                int idx = c + r * WIDTH;
+                Bitboard bit = 1ULL << idx;
+                if (board.mask & bit) {
+                    if (board.position[0] & bit) state[idx] = 'X';
+                    else state[idx] = 'O';
+                } else {
+                    state[idx] = '.';
+                }
+            }
+        }
+        state[42] = '\0';
+        return state;
+    }
+    
+    // Get winner: 0 if player 0 won, 1 if player 1 won, -1 if draw, -2 if game ongoing
+    int getWinner() {
+        if (board.isWin(0)) return 0;
+        if (board.isWin(1)) return 1;
+        if (board.isDraw()) return -1;
+        return -2;
+    }
+    
+    // Check if game is over
+    int isGameOver() {
+        return (board.isWin(0) || board.isWin(1) || board.isDraw()) ? 1 : 0;
+    }
+    
+    // Get current player's turn (0 or 1) based on move count
+    int getCurrentPlayer() {
+        return board.moves % 2;
+    }
+    
+    // Get evaluation (1 = winning position for player, 0 = draw, -1 = losing)
+    int evaluatePosition(int player) {
+        if (board.isWin(player)) return 1;
+        if (board.isWin(player ^ 1)) return -1;
+        if (board.isDraw()) return 0;
+        
+        // Use solver to evaluate
+        ConnectFour copy = board;
+        int8_t score = solver.solve(copy, player, -1, 1, 0);
+        return score;
+    }
+    
+    // Get solver statistics
+    int getNodeCount() {
+        return solver.getNodeCount();
+    }
+    
+    // Set maximum search depth (for performance tuning, default 42)
+    void setMaxDepth(int depth) {
+        // Implementation would require modifying solver class
+        // For now, placeholder
+    }
+}
