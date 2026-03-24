@@ -4,7 +4,7 @@ import {EMPTY_CELL, FIRST_PLAYER, SECOND_PLAYER} from "./rules.js";
 function drawIter(iter, logger, document, field) {
     field.replaceChildren();
     for (const item of iter) {
-        logger.log(item);
+        // logger.log(item);
         const cell = document.createElement("div");
         cell.classList.add("cell");
         if (item === SECOND_PLAYER) {
