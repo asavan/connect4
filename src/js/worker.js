@@ -23,27 +23,28 @@ async function resetBoard() {
 const moduleHolder = createAndInit();
 
 self.addEventListener("message", async (e) => {
-    console.log("Worker data1");
+    console.log("inside worker", e.data);
     if (e.data.type === "reset") {
         await resetBoard();
         return;
     }
     const exports = await moduleHolder;
     const data = e.data.input;
-    const resolver = e.data.resolver;
     console.log("Worker data", data);
     const aiPlayer = 2 - data.index;
-    exports._playMove(data.y, data.index - 1);
+    const humanPlayer = data.index - 1;
+    exports._playMove(data.y, humanPlayer);
     console.time("best");
     const nextMove = exports._getBestMove(aiPlayer);
     console.timeEnd("best");
     if (nextMove < 0) {
         const state = exports._getBoardState();
-        postMessage({result: nextMove, resolver, state});
+        console.log("Bad move", state);
+        postMessage({result: nextMove, state});
         return;
     }
     exports._playMove(nextMove, aiPlayer);
-    console.log("NextMove", nextMove);
-    postMessage({result: nextMove, resolver: resolver});
+    console.log("NextMove", nextMove, aiPlayer, humanPlayer);
+    postMessage({result: nextMove});
 }, false);
 
