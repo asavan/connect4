@@ -74,25 +74,29 @@ export function presenter(settings, logger, trans) {
 
     const tryMove = async (y, playerIndex, drawer) => {
         const res = eng.move(y, playerIndex);
-        if (res > 0) {
-            const iter = eng.iterateHorizontal();
-            if (playerIndex === myIndex) {
-                handlers.call("move", {y, index: myIndex});
-            }
+        logger.log("res1", res);
+        if (res < 0) {
+            console.error("Bad Move");
+            return res;
+        }
+        const iter = eng.iterateHorizontal();
+        if (playerIndex === myIndex) {
+            handlers.call("move", {y, index: myIndex});
+        }
+        if (drawer) {
+            drawer.drawField(iter);
+        }
+        if (res === FIRST_PLAYER || res === GAME_DRAW || res === SECOND_PLAYER) {
+            const firstMessage = await getFirstMessage(res);
+            const secondMessage = await getSecondMessage(res);
             if (drawer) {
-                drawer.drawField(iter);
-            }
-            if (res === FIRST_PLAYER || res === GAME_DRAW || res === SECOND_PLAYER) {
-                const firstMessage = await getFirstMessage(res);
-                const secondMessage = await getSecondMessage(res);
-                if (drawer) {
-                    drawer.onGameEndDraw(res, firstMessage, secondMessage);
-                }
-            }
-            if (settings.mode === "hotseat") {
-                myIndex = nextIndex(myIndex);
+                drawer.onGameEndDraw(res, firstMessage, secondMessage);
             }
         }
+        if (settings.mode === "hotseat") {
+            myIndex = nextIndex(myIndex);
+        }
+        return res;
     };
 
     const externalMove = (data) => tryMove(data.y, data.index, externalDrawer);
@@ -109,7 +113,9 @@ export function presenter(settings, logger, trans) {
     });
 
     const reloadClient = (drawer) => {
-        myIndex = nextIndex(myIndex);
+        if (settings.switchOrder) {
+            myIndex = nextIndex(myIndex);
+        }
         eng = engine(initArr, settings.height, settings.maxLen, logger, assert);
         const info = initInfo();
         handlers.call("reload", info);
@@ -123,11 +129,16 @@ export function presenter(settings, logger, trans) {
         tryDraw();
     };
 
+    const checkCurrIndex = (index) => eng.checkCurrIndex(index);
+
+    const isMyTurn = () => checkCurrIndex(getMyIndex());
+
     return {
         on, actionKeys, getAction,
         initGame,
         tryDraw,
         nextIndex,
+        isMyTurn,
         getMyIndex,
         tryMove,
         initInfo,

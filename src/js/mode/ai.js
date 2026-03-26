@@ -14,8 +14,13 @@ export default function ai(window, document, settings, gameFunction, trans) {
         const res = await p.tryMove(nextMove, p.nextIndex(p.getMyIndex()), dd);
         console.log("After bot moved", res);
     });
-    p.on("reload", () => {
+    p.on("reload", async () => {
         resetBoard();
+        if (!p.isMyTurn()) {
+            const nextMove = await getBestMoveByPlayer();
+            const res = await p.tryMove(nextMove, p.nextIndex(p.getMyIndex()), dd);
+            console.log("reload1", res);
+        }
     });
     return p;
 }

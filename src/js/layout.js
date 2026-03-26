@@ -73,7 +73,7 @@ export function draw(window, document, settings, presenter, logger) {
     };
     field.addEventListener("click", (e) => {
         const ind = getClickIndex(e, presenter.width(), wF);
-        logger.log("index", ind);
+        logger.log("index", ind, presenter.getMyIndex());
         presenter.tryMove(ind, presenter.getMyIndex(), drawer);
     });
 

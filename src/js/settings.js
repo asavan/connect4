@@ -3,6 +3,7 @@ export default {
     mode: "ai",
     channelTypes: ["socket", "supa", "fake", "auto", "auto", "autocs", "none"],
     channelType: "autocs",
+    switchOrder: true,
     wsPort : 8088,
     myIndex: 1,
     color: "blue",

@@ -186,6 +186,7 @@ export function engine(intArr, rows, maxLen, logger, assert) {
 
     return {
         cell,
+        checkCurrIndex,
         checkWinAfterMove,
         move,
         getMaxLen,
