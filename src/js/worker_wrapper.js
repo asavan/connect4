@@ -3,7 +3,7 @@ import {assert} from "netutils";
 let myWorker = null;
 let promiseHolder = null;
 try {
-    myWorker = new Worker(new URL("./worker.js", import.meta.url), {
+    myWorker = new Worker(new URL("./worker2.js", import.meta.url), {
         type: "module",
     });
     const handleWorkerMessage = function (e) {

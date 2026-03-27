@@ -1,6 +1,6 @@
 {
   "name": "connect4",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "description": "connect4",
   "author": "Alex Sav",
@@ -33,6 +33,7 @@
     "netdeps": "github:asavan/net-deps#v0.0.5"
   },
   "dependencies": {
+    "connect-four-ai-wasm": "^1.0.0",
     "netutils": "github:asavan/netutils#v0.1.5"
   }
 }

@@ -10,14 +10,14 @@ export default function ai(window, document, settings, gameFunction, trans) {
     p.setDrawer(dd);
 
     p.on("move", async (data) => {
-        const nextMove = await getBestMoveByPlayer(data);
+        const nextMove = await getBestMoveByPlayer(p.historyAsString());
         const res = await p.tryMove(nextMove, p.nextIndex(p.getMyIndex()), dd);
-        console.log("After bot moved", res);
+        console.log("After bot moved", res, data);
     });
     p.on("reload", async () => {
         resetBoard();
         if (!p.isMyTurn()) {
-            const nextMove = await getBestMoveByPlayer();
+            const nextMove = await getBestMoveByPlayer("");
             const res = await p.tryMove(nextMove, p.nextIndex(p.getMyIndex()), dd);
             console.log("reload1", res);
         }

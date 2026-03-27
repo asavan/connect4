@@ -8,6 +8,8 @@ export function presenter(settings, logger, trans) {
     let externalDrawer = null;
     let gameStarted = false;
 
+    let movesHistory = [];
+
     const isStarted = () => gameStarted;
     const start = () => {
         gameStarted = true;
@@ -79,6 +81,7 @@ export function presenter(settings, logger, trans) {
             console.error("Bad Move");
             return res;
         }
+        movesHistory.push(y);
         const iter = eng.iterateHorizontal();
         if (playerIndex === myIndex) {
             handlers.call("move", {y, index: myIndex});
@@ -105,6 +108,8 @@ export function presenter(settings, logger, trans) {
 
     const {width, height, iterateHorizontal} = eng;
 
+    const historyAsString = () => movesHistory.map(i => i + 1).join("");
+
     const initInfo = () => ({
         field: eng.compressedField(),
         height: eng.height(),
@@ -117,6 +122,7 @@ export function presenter(settings, logger, trans) {
             myIndex = nextIndex(myIndex);
         }
         eng = engine(initArr, settings.height, settings.maxLen, logger, assert);
+        movesHistory = [];
         const info = initInfo();
         handlers.call("reload", info);
         tryRestartView(drawer);
@@ -135,6 +141,7 @@ export function presenter(settings, logger, trans) {
 
     return {
         on, actionKeys, getAction,
+        historyAsString,
         initGame,
         tryDraw,
         nextIndex,
