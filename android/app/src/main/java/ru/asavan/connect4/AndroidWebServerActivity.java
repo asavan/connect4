@@ -28,24 +28,33 @@ public class AndroidWebServerActivity extends Activity {
         try {
             HostUtils hostUtils = new HostUtils(STATIC_CONTENT_PORT, WEB_SOCKET_PORT, secure);
             addButtons(IpUtils.getIPAddressSafe(), hostUtils);
-            Map<String, String> mainParams = new LinkedHashMap<>();
-            mainParams.put("mode", "hotseat");
-            btnUtils.launchTwa(hostUtils.getStaticHost(LOCALHOST), mainParams);
+            btnUtils.launchTwa(hostUtils.getStaticHost(LOCALHOST), null);
         } catch (Exception e) {
             Log.e(MAIN_LOG_TAG, "main", e);
         }
     }
 
     private void addButtons(String formattedIpAddress, HostUtils hostUtils) {
-        final String host = hostUtils.getStaticHost(formattedIpAddress);
-        final String webSocketHost = hostUtils.getSocketHost(formattedIpAddress);
+        final String localhost = hostUtils.getStaticHost(LOCALHOST);
         {
+            final String host = hostUtils.getStaticHost(formattedIpAddress);
+            final String webSocketHost = hostUtils.getSocketHost(formattedIpAddress);
             Map<String, String> b = new LinkedHashMap<>();
             b.put("wh", webSocketHost);
             b.put("sh", host);
             b.put("mode", "net");
             btnUtils.addButtonBrowser(host, b, R.id.button1);
-            btnUtils.addButtonTwa(hostUtils.getStaticHost(LOCALHOST), b, R.id.button4, host);
+            btnUtils.addButtonTwa(localhost, b, R.id.button4, host);
+        }
+        {
+            Map<String, String> b = new LinkedHashMap<>();
+            b.put("mode", "ai");
+            btnUtils.addButtonTwa(hostUtils.getStaticHost(LOCALHOST), b, R.id.button2);
+        }
+        {
+            Map<String, String> b = new LinkedHashMap<>();
+            b.put("mode", "hotseat");
+            btnUtils.addButtonTwa(hostUtils.getStaticHost(LOCALHOST), b, R.id.button3);
         }
     }
 

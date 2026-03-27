@@ -36,7 +36,8 @@
     <string name="launch_real_ip">Real IP</string>
     <string name="launch_twa_local">Launch in app local</string>
     <string name="server_mode">Server mode</string>
-    <string name="ai">Ai in webview</string>
+    <string name="ai">Ai</string>
+    <string name="hotseat">Hotseat</string>
     <string name="webview">Webview</string>
     <string name="webview_localhost">Webview localhost</string>
     <string name="errors">Error messages</string>
