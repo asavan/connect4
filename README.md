@@ -18,3 +18,8 @@ play                                          |  win
 - [ ] Добавить AI
 - [ ] Анимация падения последнего диска
 
+
+### Собрать webassembly module
+```bash
+emcc -s EXPORT_ES6=1 -s ENVIRONMENT=worker -s EXPORTED_FUNCTIONS="['_init','_getBestMove','_playMove','_resetBoard','_getBoardState','_isGameOver']" -s EXPORTED_RUNTIME_METHODS="['cwrap']" -o connect4_solver.js connect4_solver.cpp
+```

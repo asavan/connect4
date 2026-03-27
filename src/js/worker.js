@@ -1,27 +1,11 @@
-/*
-emcc -s EXPORT_ES6=1 -s ENVIRONMENT="web"
--s EXPORTED_FUNCTIONS="['_init','_getBestMove','_playMove','_resetBoard','_getBoardState','_isGameOver']"
--s EXPORTED_RUNTIME_METHODS="['cwrap']"
--o connect4_solver.js connect4_solver.cpp
-*/
-
-// import createModule from "./lib/ai_generated/connect4_solver.js";
-import createModule from "./lib/christophe_steininger_c4/solver.js";
+import init, { Solver, Position } from "connect-four-ai-wasm";
 
 async function createAndInit() {
-    const module = await createModule();
-    console.log("loaded", module);
-    const exports = module;
-    exports._init();
-    exports._resetBoard();
-    const solver = new module.Solver();
-    return {exports, solver};
-}
+    const exports = await init();
 
-async function resetBoard() {
-    const {exports} = await moduleHolder;
-    exports._resetBoard();
-    console.log("reseted");
+    const solver = new Solver();
+    console.log("Afret init", exports, solver, Position);
+    return {exports, solver};
 }
 
 const moduleHolder = createAndInit();
@@ -29,26 +13,17 @@ const moduleHolder = createAndInit();
 self.addEventListener("message", async (e) => {
     console.log("inside worker", e.data);
     if (e.data.type === "reset") {
-        await resetBoard();
         return;
     }
-    const {exports, solver} = await moduleHolder;
+    const {solver} = await moduleHolder;
     const data = e.data.input;
-    console.log("Worker data", data);
-    if (data) {
-        exports._playMove(data.y);
-    }
+    // let position = Position.fromMoves(data.moves);
+    const position = Position.fromMoves(data);
     console.time("best");
-    const nextMove = exports._getBestMove(solver);
+    const moves = solver.getAllMoveScores(position);
+    const maxValue = Math.max(...moves); // Find the maximum value
+    const maxIndex = moves.indexOf(maxValue); // Find the index of that value
     console.timeEnd("best");
-    if (nextMove < 0) {
-        // const state = exports._getBoardState();
-        console.log("Bad move");
-        postMessage({result: nextMove});
-        return;
-    }
-    exports._playMove(nextMove);
-    console.log("NextMove", nextMove);
-    postMessage({result: nextMove});
+    console.log("NextMove", moves, data);
+    postMessage({result: maxIndex});
 }, false);
-
