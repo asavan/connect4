@@ -1,4 +1,5 @@
 import init, { Solver, Position } from "connect-four-ai-wasm";
+import {random} from "netutils";
 
 async function createAndInit() {
     const exports = await init();
@@ -22,7 +23,16 @@ self.addEventListener("message", async (e) => {
     console.time("best");
     const moves = solver.getAllMoveScores(position);
     const maxValue = Math.max(...moves); // Find the maximum value
-    const maxIndex = moves.indexOf(maxValue); // Find the index of that value
+    const results = [];
+    let i = 0;
+    for (const el of moves) {
+        if (el === maxValue) {
+            results.push(i);
+        }
+        ++i;
+    }
+    const maxIndex = random.randomEl(results, Math.random);
+    // const maxIndex = moves.indexOf(maxValue); // Find the index of that value
     console.timeEnd("best");
     console.log("NextMove", moves, data);
     postMessage({result: maxIndex});
