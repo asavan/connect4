@@ -8,6 +8,7 @@ export default {
     myIndex: 1,
     color: "blue",
     size: 4,
+    sound: true,
     logger: true,
     width: 7,
     height: 6,

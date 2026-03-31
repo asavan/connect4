@@ -1,6 +1,6 @@
 import {presenter} from "../presenter.js";
 import {draw} from "../layout.js";
-import {loggerFunc} from "netutils";
+import {delay, loggerFunc} from "netutils";
 import {getBestMoveByPlayer, resetBoard} from "../worker_wrapper.js";
 
 export default function ai(window, document, settings, gameFunction, trans) {
@@ -10,7 +10,9 @@ export default function ai(window, document, settings, gameFunction, trans) {
     p.setDrawer(dd);
 
     p.on("move", async (data) => {
+        const timer = delay(600);
         const nextMove = await getBestMoveByPlayer(p.historyAsString());
+        await timer;
         const res = await p.tryMove(nextMove, p.nextIndex(p.getMyIndex()), dd);
         console.log("After bot moved", res, data);
     });

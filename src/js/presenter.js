@@ -1,5 +1,6 @@
 import {engine, FIRST_PLAYER, GAME_DRAW, SECOND_PLAYER} from "./rules.js";
 import {handlersFunc, assert} from "netutils";
+import {audioManager} from "./audio.js";
 
 export function presenter(settings, logger, trans) {
     let myIndex = settings.myIndex;
@@ -7,6 +8,10 @@ export function presenter(settings, logger, trans) {
 
     let externalDrawer = null;
     let gameStarted = false;
+
+    const audioM = audioManager(settings, logger);
+    // await ?
+    audioM.loadAll();
 
     let movesHistory = [];
 
@@ -81,6 +86,7 @@ export function presenter(settings, logger, trans) {
             console.error("Bad Move");
             return res;
         }
+        audioM.play("move");
         movesHistory.push(y);
         const iter = eng.iterateHorizontal();
         if (playerIndex === myIndex) {
@@ -121,6 +127,7 @@ export function presenter(settings, logger, trans) {
         if (settings.switchOrder) {
             myIndex = nextIndex(myIndex);
         }
+        audioM.play("gameover");
         eng = engine(initArr, settings.height, settings.maxLen, logger, assert);
         movesHistory = [];
         const info = initInfo();

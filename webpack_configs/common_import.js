@@ -1,1 +1,3 @@
-export default [];
+export default [
+    { from: "./src/sounds", to: "./sounds" }
+];
