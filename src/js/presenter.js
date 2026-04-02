@@ -6,6 +6,8 @@ export function presenter(settings, logger, trans) {
     let myIndex = settings.myIndex;
     const initArr = Array(settings.width).fill(1);
 
+    let round = 0;
+
     let externalDrawer = null;
     let gameStarted = false;
 
@@ -24,10 +26,10 @@ export function presenter(settings, logger, trans) {
         externalDrawer = d;
     };
 
-    let eng = engine(initArr, settings.height, settings.maxLen, logger, assert);
+    let eng = engine(initArr, settings.height, settings.maxLen, logger, assert, round);
 
     const initGame = (data) => {
-        eng = engine(data.field, data.height, data.maxLen, logger, assert);
+        eng = engine(data.field, data.height, data.maxLen, logger, assert, round);
         myIndex = data.index;
         gameStarted = true;
     };
@@ -62,8 +64,8 @@ export function presenter(settings, logger, trans) {
     const tryDraw = (drawer) => {
         drawer = drawer || externalDrawer;
         if (drawer) {
-            const iter = eng.iterateHorizontal();
-            drawer.drawField(iter);
+            // const iter = eng.iterateHorizontal();
+            drawer.drawByPresenter();
         } else {
             logger.log("No drawer");
         }
@@ -86,14 +88,12 @@ export function presenter(settings, logger, trans) {
             console.error("Bad Move");
             return res;
         }
-        audioM.play("move");
         movesHistory.push(y);
-        const iter = eng.iterateHorizontal();
         if (playerIndex === myIndex) {
             handlers.call("move", {y, index: myIndex});
         }
         if (drawer) {
-            drawer.drawField(iter);
+            drawer.drawMove(y, audioM);
         }
         if (res === FIRST_PLAYER || res === GAME_DRAW || res === SECOND_PLAYER) {
             const firstMessage = await getFirstMessage(res);
@@ -112,7 +112,15 @@ export function presenter(settings, logger, trans) {
 
     const myMove = (y) => tryMove(y, getMyIndex(), externalDrawer);
 
-    const {width, height, iterateHorizontal} = eng;
+    // const {width, height, iterateHorizontal, cell, checkCurrIndex, getCurrIndex, emptySizeInCol, getRound} = eng;
+    const width = () => eng.width();
+    const height = () => eng.height();
+    const cell = (x, y) => eng.cell(x, y);
+    const iterateHorizontal = eng.iterateHorizontal();
+    const checkCurrIndex = (ind) => eng.checkCurrIndex(ind);
+    const getCurrIndex = () => eng.getCurrIndex();
+    const emptySizeInCol = (ind) => eng.emptySizeInCol(ind);
+    const getRound = () => eng.getRound();
 
     const historyAsString = () => movesHistory.map(i => i + 1).join("");
 
@@ -128,7 +136,8 @@ export function presenter(settings, logger, trans) {
             myIndex = nextIndex(myIndex);
         }
         audioM.play("gameover");
-        eng = engine(initArr, settings.height, settings.maxLen, logger, assert);
+        ++round;
+        eng = engine(initArr, settings.height, settings.maxLen, logger, assert, round);
         movesHistory = [];
         const info = initInfo();
         handlers.call("reload", info);
@@ -142,8 +151,6 @@ export function presenter(settings, logger, trans) {
         tryDraw();
     };
 
-    const checkCurrIndex = (index) => eng.checkCurrIndex(index);
-
     const isMyTurn = () => checkCurrIndex(getMyIndex());
 
     return {
@@ -152,6 +159,8 @@ export function presenter(settings, logger, trans) {
         initGame,
         tryDraw,
         nextIndex,
+        getCurrIndex,
+        emptySizeInCol,
         isMyTurn,
         getMyIndex,
         tryMove,
@@ -165,6 +174,8 @@ export function presenter(settings, logger, trans) {
         onReloadSignal,
         iterateHorizontal,
         width,
-        height
+        height,
+        getRound,
+        cell
     };
 }

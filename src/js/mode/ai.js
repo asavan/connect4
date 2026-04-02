@@ -10,7 +10,7 @@ export default function ai(window, document, settings, gameFunction, trans) {
     p.setDrawer(dd);
 
     p.on("move", async (data) => {
-        const timer = delay(600);
+        const timer = delay(1200);
         const nextMove = await getBestMoveByPlayer(p.historyAsString());
         await timer;
         const res = await p.tryMove(nextMove, p.nextIndex(p.getMyIndex()), dd);

@@ -5,11 +5,13 @@
 }
 
 :root {
-  --main-color: #F0F8FF;
+  --main-color: aliceblue;
   --first-player: red;
   --second-player: orange;
   --field-width: 7;
   --field-height: 6;
+  --x-coeff: 0;
+  --y-coeff: 0;
 }
 
 html,
@@ -81,6 +83,7 @@ img {
   background: rgb(0 0 0 / 70%);
   transition: opacity 700ms;
   visibility: hidden;
+  z-index: 10;
   opacity: 0;
 }
 
@@ -140,13 +143,14 @@ img {
 .field {
   display: grid;
   grid-template-columns: repeat(var(--field-width), 1fr);
-  grid-template-rows: repeat(var(--field-height), 1fr);
-  gap: 10px;
-  border: 1px solid black;
-  padding: 10px;
-  max-width: 500px;
+  aspect-ratio: calc(var(--field-width) / var(--field-height));
+  /*grid-template-rows: repeat(var(--field-height), 1fr);*/
+  /*gap: 10px;*/
+  /*border: 1px solid black;*/
+  /*padding: 10px;*/
+  max-width: 490px;
   cursor: pointer;
-  background-color: royalblue;
+  /*background-color: lightgray;*/
   -webkit-tap-highlight-color: transparent !important;
   outline: none !important;
 }
@@ -183,6 +187,72 @@ img {
   margin-top: 10px;
   max-width: 500px;
   background-color: royalblue;
+}
+
+.back-col {
+  /*background-color: red;*/
+  display: flex;
+  position:relative;
+  pointer-events: none;
+  flex-direction: column;
+}
+
+.hole {
+  /*background: aliceblue;*/
+  aspect-ratio: 1/1;
+  pointer-events: none;
+  position:relative;
+  /*margin:0 auto;*/
+  overflow:hidden;
+}
+
+.hole:after{
+  content:'';
+  pointer-events: none;
+  position:absolute;
+  left:50%;
+  top: 50%;
+  z-index: 3;
+  transform: translate(-50%,-50%);
+  border-radius:50%;
+  min-width:50px;
+  max-width:70px;
+  aspect-ratio: 1/1;
+  height:60px;
+  border: 1000px solid royalblue;
+}
+
+.ball {
+  /*padding: 20px;*/
+  position: absolute;
+  width: 100%;
+  aspect-ratio: 1/1;
+  z-index: 1;
+  border-radius:50%;
+  transition: transform 100ms linear;
+  transform: translate(calc(100% * (var(--x-coeff))), calc(100% * (var(--y-coeff) - 1) - 50px));
+}
+
+.active {
+  cursor: pointer;
+}
+
+.wait:after {
+  content: "⌛";
+  font-size: 2rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+
+.buffer {
+  min-height: 100px;
+}
+
+.ball-animate {
+  transition: transform 300ms ease-in;
+  transform: translate(calc(100% * (var(--x-coeff))), calc(100% * (var(--y-coeff) - 1)));
 }
 
 .hidden {

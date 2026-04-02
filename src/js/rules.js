@@ -36,7 +36,7 @@ export function lastNonZero(arr) {
     return VALIDATION_ERROR;
 }
 
-export function engine(intArr, rows, maxLen, logger, assert) {
+export function engine(intArr, rows, maxLen, logger, assert, round) {
     const cols = intArr.length;
     const matrix = parseIntArr(intArr);
 
@@ -101,6 +101,8 @@ export function engine(intArr, rows, maxLen, logger, assert) {
         return res;
     };
 
+    const getRound = () => round;
+
     const isWin = (x, y) => {
         const dd = [[1, 0], [0, 1], [1, 1], [1, -1]];
         const val = cell(x, y);
@@ -138,6 +140,7 @@ export function engine(intArr, rows, maxLen, logger, assert) {
     };
 
     const checkCurrIndex = (index) => index === curIndex;
+    const getCurrIndex = () => curIndex;
 
     const move = (y, index) => {
         if (!checkCurrIndex(index)) {
@@ -159,6 +162,14 @@ export function engine(intArr, rows, maxLen, logger, assert) {
         status = isWin(x, y);
         return status;
     };
+
+    const emptySizeInCol = (y) => {
+        if (y < 0 || y >= cols) {
+            return VALIDATION_ERROR;
+        }
+        const col = matrix[y];
+        return rows - col.length;
+    }
 
     const iterateHorizontal = () => {
         const itHor = {
@@ -187,9 +198,12 @@ export function engine(intArr, rows, maxLen, logger, assert) {
     return {
         cell,
         checkCurrIndex,
+        getCurrIndex,
         checkWinAfterMove,
         move,
+        emptySizeInCol,
         getMaxLen,
+        getRound,
         iterateHorizontal,
         compressedField,
         width,

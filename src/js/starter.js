@@ -20,6 +20,9 @@ export default async function starter(window, document) {
     } else if (settings.mode === "ai") {
         const ai = await import("./mode/ai.js");
         await ai.default(window, document, settings, gameFunction, trans);
+    } else if (settings.mode === "secret") {
+        const mode = await import("./mode/secret.js");
+        await mode.default(window, document, settings, gameFunction, trans);
     } else {
         assert(false, "Unsupported mode");
     }
