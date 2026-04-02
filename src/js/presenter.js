@@ -135,6 +135,9 @@ export function presenter(settings, logger, trans) {
         if (settings.switchOrder) {
             myIndex = nextIndex(myIndex);
         }
+        if (settings.mode === "hotseat") {
+            myIndex = FIRST_PLAYER;
+        }
         audioM.play("gameover");
         ++round;
         eng = engine(initArr, settings.height, settings.maxLen, logger, assert, round);
