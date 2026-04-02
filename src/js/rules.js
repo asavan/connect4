@@ -169,7 +169,7 @@ export function engine(intArr, rows, maxLen, logger, assert, round) {
         }
         const col = matrix[y];
         return rows - col.length;
-    }
+    };
 
     const iterateHorizontal = () => {
         const itHor = {

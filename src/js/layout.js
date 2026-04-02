@@ -36,7 +36,7 @@ function changeColor(document) {
 }
 
 function drawActiveBall(logger, document, index, isMyMove) {
-    const col3 = document.querySelector('[data-ind="ind3"]');
+    const col3 = document.querySelector("[data-ind=\"ind3\"]");
     const ball = document.createElement("div");
     ball.classList.add("ball");
     ball.classList.add("active");

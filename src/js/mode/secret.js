@@ -1,17 +1,8 @@
-import {
-    delay,
-    loggerFunc,
-    netObj
-} from "netutils";
-import {draw} from "../layout.js";
-import {presenter} from "../presenter.js";
+import {delay} from "netutils";
 
-export default async function secretMode(window, document, settings, trans) {
-    const logger = loggerFunc(document, settings, 3);
-    const myId = netObj.getMyId(window, settings, Math.random);
-
-    document.documentElement.style.setProperty("--field-width", 7);
-    document.documentElement.style.setProperty("--field-height", 6);
+export default async function secretMode(window, document, settings) {
+    document.documentElement.style.setProperty("--field-width", settings.width);
+    document.documentElement.style.setProperty("--field-height", settings.height);
     const field = document.querySelector(".field");
     field.replaceChildren();
     for (let j = 0; j < 7; ++j) {
@@ -26,7 +17,7 @@ export default async function secretMode(window, document, settings, trans) {
         }
     }
 
-    const col3 = document.querySelector('[data-ind="ind3"]');
+    const col3 = document.querySelector("[data-ind=\"ind3\"]");
 
     console.log(col3);
     const ball = document.createElement("div");
