@@ -207,7 +207,7 @@ img {
   z-index: 1;
   border-radius:50%;
   transition: transform 100ms linear;
-  transform: translate(calc(100% * (var(--x-coeff))), calc(100% * (var(--y-coeff) - 1) - 50px));
+  transform: translate(calc(100% * (var(--x-coeff))), calc(100% * (var(--y-coeff) - 1) - 20px));
 }
 
 .active {
@@ -231,6 +231,89 @@ img {
   transition: transform 300ms ease-in;
   transform: translate(calc(100% * (var(--x-coeff))), calc(100% * (var(--y-coeff) - 1)));
 }
+
+.panel-header {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+}
+
+.relative {
+  position: relative;
+}
+
+.control-panel {
+  top: 10px;
+  right: 10px;
+  background-color: #323232;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  font-family: sans-serif;
+  display: flex;
+  z-index: 2;
+  flex-direction: column;
+  min-width: 320px;
+  transition: min-height 0.3s ease, padding 0.3s ease, min-width 0.3s ease;
+  gap: 5px;
+}
+
+.control-panel.minimized {
+  min-width: auto;
+  min-height: auto;
+  gap: 0;
+  display: block !important;
+  margin-left: 0;
+  padding: 5px;
+  outline: none;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.contrl-btn {
+  font-family: Cambria, Georgia, serif;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  overflow: hidden;
+  font-size: 2rem;
+  padding: 0 3px;
+}
+
+.control-panel button:not(:disabled):active {
+  background-color: #7a7a7a;
+  transform: translateY(1px);
+}
+
+.control-panel button:not(:disabled):hover { background-color: #686868; }
+
+.circled {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.circled::before {
+  content: "";
+  grid-area: 1 / 1;
+  width: 35px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.circled::after {
+  content: "?";
+  grid-area: 1 / 1;
+}
+
 
 .hidden {
   display: none;

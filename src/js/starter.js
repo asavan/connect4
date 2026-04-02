@@ -2,6 +2,7 @@ import settings from "./settings.js";
 import {assert} from "netutils";
 import {parseZipSettings} from "netutils/src/js/utils/parse-settings.js";
 import translator from "./translation.js";
+import handleAudio from "./audio-switcher.js";
 
 export default async function starter(window, document) {
     await parseZipSettings(window.location.search, settings);
@@ -10,6 +11,8 @@ export default async function starter(window, document) {
     const gameFunction = () => ({on : () => {}});
 
     const trans = translator(settings.lang);
+
+    handleAudio(window, document, settings);
 
     if (settings.mode === "net") {
         const netMode = await import("./mode/net_mode.js");

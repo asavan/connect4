@@ -16,7 +16,19 @@
 </head>
 <body>
 <div class="content">
-    <div class="menu">&#128266;</div>
+    <div class="menu"></div>
+    <section class="menu">
+        <div id="control-panel" class="control-panel minimized">
+            <div class="panel-header">
+                <!--⛶ ⤭ ◱ 🗖 🗖 -->
+                <button id="butInstall" title="install" class="hidden contrl-btn butInstall">↓</button>
+                <button id="sound" title="sound" class="contrl-btn hidden js-sound-btn">&#128266;</button>
+                <button class="help-btn contrl-btn circled" title="Rules" popovertarget="myModal"></button>
+            </div>
+            <div class="panel-content"></div>
+        </div>
+        <div class="video-barcode"></div>
+    </section>
     <div class="app">
         <div class="buffer"></div>
         <div class="field"></div>
@@ -34,8 +46,12 @@
         </div>
     </div>
 </div>
+<dialog popover id="myModal" >
+    <p id="modalContent">
+        Connect 4 is a two-player strategy game where the goal is to be the first to connect four of your colored discs in a row—horizontally, vertically, or diagonally. Players take turns dropping discs into a vertical grid, with the game ending immediately when one player connects four or the grid fills up
+    </p>
+</dialog>
 <footer>
-    <button id="butInstall" class="butInstall install hidden hidden2">Install as app</button>
 </footer>
 <template id="result-row">
     <li class="row">
