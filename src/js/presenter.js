@@ -1,5 +1,5 @@
 import {engine, FIRST_PLAYER, GAME_DRAW, SECOND_PLAYER} from "./rules.js";
-import {handlersFunc, assert} from "netutils";
+import {handlersFunc, assert, delay} from "netutils";
 import {audioManager} from "./audio.js";
 
 export function presenter(settings, logger, trans) {
@@ -92,6 +92,7 @@ export function presenter(settings, logger, trans) {
         if (playerIndex === myIndex) {
             handlers.call("move", {y, index: myIndex});
         }
+        drawer = drawer || externalDrawer;
         if (drawer) {
             drawer.drawMove(y, audioM);
         }
@@ -131,7 +132,7 @@ export function presenter(settings, logger, trans) {
         index: nextIndex(getMyIndex())
     });
 
-    const reloadClient = (drawer) => {
+    const reloadClient = async (drawer) => {
         if (settings.switchOrder) {
             myIndex = nextIndex(myIndex);
         }
@@ -139,6 +140,7 @@ export function presenter(settings, logger, trans) {
             myIndex = FIRST_PLAYER;
         }
         audioM.play("gameover");
+        await delay(500);
         ++round;
         eng = engine(initArr, settings.height, settings.maxLen, logger, assert, round);
         movesHistory = [];

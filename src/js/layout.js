@@ -13,18 +13,6 @@ function drawItem(cell, item) {
     }
 }
 
-
-function drawIter(iter, logger, document, field) {
-    field.replaceChildren();
-    for (const item of iter) {
-        // logger.log(item);
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
-        drawItem(cell, item);
-        field.append(cell);
-    }
-}
-
 let currIndex = 0;
 function changeColor(document) {
     ++currIndex;
@@ -59,6 +47,15 @@ function drawIter2(presenter, logger, document, field) {
         background.classList.add("back-col");
         background.dataset.ind = "ind" + j;
         field.append(background);
+        background.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (e.target.classList.contains("active")) {
+                return;
+            }
+            const ind = j;
+            logger.log("index", ind, presenter.getMyIndex());
+            presenter.tryMove(ind, presenter.getMyIndex());
+        });
         for (let i = 0; i < presenter.height(); ++i) {
             const cell = document.createElement("div");
             cell.classList.add("hole");
@@ -93,10 +90,6 @@ async function drawMove(logger, document, presenter, index, audioManager) {
     ball.style.setProperty("--y-coeff", yCoeff);
     await delay(300);
     drawActiveBall(logger, document, presenter.getCurrIndex(), presenter.isMyTurn());
-}
-
-function getClickIndex(e, count, width) {
-    return Math.floor((e.offsetX + 1) * count / width);
 }
 
 function setupOverlay(document, onClose) {
@@ -137,9 +130,7 @@ export function draw(window, document, settings, presenter, logger) {
     field.classList.remove("disabled");
     reload.classList.add("hidden");
     const overlay = setupOverlay(document);
-    const wF = field.offsetWidth;
     const drawer = {
-        drawField: (iter) => drawIter(iter, logger, document, field),
         drawByPresenter : () => drawIter2(presenter, logger, document, field),
         drawMove : (index, audioManager) => drawMove(logger, document, presenter, index, audioManager),
         onRoundStart: () => onRoundStart(overlay, field, reload),
@@ -147,18 +138,13 @@ export function draw(window, document, settings, presenter, logger) {
             (res, message, messageSmall) =>
                 onGameEndDraw(res, overlay, field, reload, message, messageSmall)
     };
-    field.addEventListener("click", (e) => {
-        const ind = getClickIndex(e, presenter.width(), wF);
-        logger.log("index", ind, presenter.getMyIndex());
-        presenter.tryMove(ind, presenter.getMyIndex(), drawer);
-    });
 
     reload.addEventListener("click", () => {
         logger.log("reload pressed");
         presenter.reloadClient(drawer);
     });
 
-    logger.log(field);
+    presenter.setDrawer(drawer);
     drawer.drawByPresenter();
     return drawer;
 }
