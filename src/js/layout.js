@@ -58,6 +58,11 @@ function drawIter2(presenter, logger, document, field) {
             if (e.target.classList.contains("active")) {
                 return;
             }
+            const parent = e.currentTarget.parentNode;
+            if (parent && parent.classList.contains("disabled")) {
+                logger.log("Click on disabled");
+                return;
+            }
             const ind = j;
             logger.log("index", ind, presenter.getMyIndex());
             presenter.myMove(ind, presenter.getMyIndex());

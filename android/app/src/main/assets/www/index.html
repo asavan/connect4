@@ -13,12 +13,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Roboto+Mono:ital,wght@0,600;1,400&display=swap" rel="stylesheet" crossorigin="anonymous">
-<script type="module" src="main.0eee1bea9fd7c849fd38.js"></script><style type="text/css">*{box-sizing:border-box;margin:0;padding:0}:root{--main-color:#f0f8ff;--first-player:red;--second-player:orange;--field-width:7;--field-height:6}body,html{height:100%}body{display:flex;flex-direction:column}.content{flex:1 0 auto}footer{flex:0 0 auto}.qrcode.big{left:0;position:absolute;top:0;width:calc(var(--field-size)*100px + 50px)}.qrcode{margin:auto;width:300px}@media (max-width:700px){.hidden2{display:none}}.install{background-color:var(--main-color);border:0;cursor:pointer;font:700 24px/100px Tahoma,sans-serif;height:100px;padding:0;text-align:center;width:100%}img{display:block;height:100px;margin-left:auto;margin-right:auto;max-width:100%}@media (max-width:450px){.hidden2{display:none}}.overlay{background:rgba(0,0,0,.7);inset:0;opacity:0;position:fixed;transition:opacity .7s;visibility:hidden}.overlay.show{opacity:1;visibility:visible}.popup{background:#fff;border-radius:5px;margin:70px auto;padding:20px;position:relative;transition:all 5s ease-in-out;width:80%}.popup h2{color:#333;font-family:Tahoma,Arial,sans-serif;margin-top:0}.popup .close{color:#333;font-size:30px;font-weight:700;position:absolute;right:30px;text-decoration:none;top:20px;transition:all .4s}.popup .close:hover{color:var(--player-color)}.popup .content{max-height:30%;overflow:auto}.square{aspect-ratio:1/1;border:none;text-align:center}.app{max-width:520px}.field{background-color:#4169e1;border:1px solid #000;cursor:pointer;display:grid;gap:10px;grid-template-columns:repeat(var(--field-width),1fr);grid-template-rows:repeat(var(--field-height),1fr);max-width:500px;padding:10px;-webkit-tap-highlight-color:transparent!important;outline:none!important}.cell{aspect-ratio:1/1;background-color:#d3d3d3;border:1px solid #ccc;border-radius:50%;max-width:70px;padding:10px;pointer-events:none;text-align:center}.first{background-color:var(--first-player)}.second{background-color:var(--second-player)}.empty{background-color:var(--main-color)}.disabled{cursor:not-allowed}.reload{background-color:#4169e1;cursor:pointer;margin-top:10px;max-width:500px}.hidden{display:none}</style></head>
+<script type="module" src="main.e80e16525961ff88bfb6.js"></script><style type="text/css">*{box-sizing:border-box;margin:0;padding:0}:root{--main-color:#f0f8ff;--first-player:red;--second-player:orange;--field-width:7;--field-height:6;--x-coeff:0;--y-coeff:0}body,html{height:100%}body{display:flex;flex-direction:column}.content{flex:1 0 auto}footer{flex:0 0 auto}.qrcode.big{left:0;position:absolute;top:0;width:calc(var(--field-size)*100px + 50px)}.qrcode{margin:auto;width:300px}@media (max-width:700px){.hidden2{display:none}}.install{background-color:var(--main-color);border:0;cursor:pointer;font:700 24px/100px Tahoma,sans-serif;height:100px;padding:0;text-align:center;width:100%}img{display:block;height:100px;margin-left:auto;margin-right:auto;max-width:100%}@media (max-width:450px){.hidden2{display:none}}.overlay{background:rgba(0,0,0,.7);inset:0;opacity:0;position:fixed;transition:opacity .7s;visibility:hidden;z-index:10}.overlay.show{opacity:1;visibility:visible}.popup{background:#fff;border-radius:5px;margin:70px auto;padding:20px;position:relative;transition:all 5s ease-in-out;width:80%}.popup h2{color:#333;font-family:Tahoma,Arial,sans-serif;margin-top:0}.popup .close{color:#333;font-size:30px;font-weight:700;position:absolute;right:30px;text-decoration:none;top:20px;transition:all .4s}.popup .close:hover{color:var(--player-color)}.popup .content{max-height:30%;overflow:auto}.square{aspect-ratio:1/1;border:none;text-align:center}.app{max-width:520px}.field{aspect-ratio:calc(var(--field-width)/var(--field-height));cursor:pointer;display:grid;grid-template-columns:repeat(var(--field-width),1fr);max-width:490px;-webkit-tap-highlight-color:transparent!important;outline:none!important}.first{background-color:var(--first-player)}.second{background-color:var(--second-player)}.empty{background-color:var(--main-color)}.disabled{cursor:not-allowed}.reload{background-color:#4169e1;cursor:pointer;margin-top:10px;max-width:500px}.back-col{display:flex;flex-direction:column}.back-col,.hole{position:relative}.hole{aspect-ratio:1/1;overflow:hidden}.hole:after{border:1000px solid #4169e1;border-radius:50%;content:"";left:50%;max-width:70px;min-width:50px;pointer-events:none;top:50%;transform:translate(-50%,-50%);z-index:3}.ball,.hole:after{aspect-ratio:1/1;position:absolute}.ball{border-radius:50%;transform:translate(calc(100%*(var(--x-coeff))),calc(100%*(var(--y-coeff) - 1) - 20px));transition:transform .1s linear;width:100%;z-index:1}.active{cursor:pointer}.wait:after{content:"⌛";font-size:2rem;left:50%;position:absolute;top:50%;transform:translate(-50%,-50%)}.buffer{min-height:100px}.ball-animate{transform:translate(calc(100%*(var(--x-coeff))),calc(100%*(var(--y-coeff) - 1)));transition:transform .3s ease-in}.panel-header{align-items:center;display:flex;flex-direction:row;gap:3px;justify-content:flex-end}.relative{position:relative}.control-panel{background-color:#323232;border-radius:5px;color:#fff;display:flex;flex-direction:column;font-family:sans-serif;gap:5px;min-width:320px;padding:10px;right:10px;top:10px;transition:min-height .3s ease,padding .3s ease,min-width .3s ease;z-index:2}.control-panel.minimized{border-radius:3px;display:block!important;gap:0;margin-left:0;min-height:auto;min-width:auto;outline:none;outline-offset:2px;padding:5px}.contrl-btn{background:none;border:none;color:#fff;cursor:pointer;display:grid;font-family:Cambria,Georgia,serif;font-size:2rem;height:50px;overflow:hidden;padding:0 3px;place-items:center;width:50px}.control-panel button:not(:disabled):active{background-color:#7a7a7a;transform:translateY(1px)}.control-panel button:not(:disabled):hover{background-color:#686868}.circled{align-items:center;display:grid;justify-content:center}.circled:before{aspect-ratio:1/1;border:2px solid #fff;border-radius:50%;content:"";grid-area:1/1;width:35px}.circled:after{content:"?";grid-area:1/1}.hidden{display:none}</style></head>
 <body>
 <div class="content">
+    <div class="menu"></div>
+    <section class="menu">
+        <div id="control-panel" class="control-panel minimized">
+            <div class="panel-header">
+                <!--⛶ ⤭ ◱ 🗖 🗖 -->
+                <button id="butInstall" title="install" class="hidden contrl-btn butInstall">↓</button>
+                <button id="sound" title="sound" class="contrl-btn hidden js-sound-btn">&#128266;</button>
+                <button class="help-btn contrl-btn circled" title="Rules" popovertarget="myModal"></button>
+            </div>
+            <div class="panel-content"></div>
+        </div>
+        <div class="video-barcode"></div>
+    </section>
     <div class="app">
+        <div class="buffer"></div>
         <div class="field"></div>
-        <div class="reload"><img src="./images/reload.svg" alt="reload"></div>
+        <div class="reload hidden"><img src="./images/reload.svg" alt="reload"></div>
     </div>
     <div class="qrcontainer"></div>
     <div class="qrcontainerserver"></div>
@@ -32,24 +46,18 @@
         </div>
     </div>
 </div>
+<dialog popover id="myModal" >
+    <p id="modalContent">
+        Connect 4 is a two-player strategy game where the goal is to be the first to connect four of your colored discs in a row—horizontally, vertically, or diagonally. Players take turns dropping discs into a vertical grid, with the game ending immediately when one player connects four or the grid fills up
+    </p>
+</dialog>
 <footer>
-    <button id="butInstall" class="butInstall install hidden hidden2">Install as app</button>
 </footer>
 <template id="result-row">
     <li class="row">
         <div class="request"></div>
         <div class="response"></div>
     </li>
-</template>
-<template id="cell">
-    <div class="square">
-        <input inputmode="numeric"
-               pattern="[0-9]*"
-               type="text"
-               data-index="0"
-               maxlength="1"
-        />
-    </div>
 </template>
 </body>
 
