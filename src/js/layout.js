@@ -23,7 +23,7 @@ function changeColor(document) {
     document.documentElement.style.setProperty("--second-player", secondColor);
 }
 
-function drawActiveBall(logger, document, index, isMyMove) {
+function drawActiveBall(logger, document, index, isMyMove, field) {
     const col3 = document.querySelector("[data-ind=\"ind3\"]");
     const ball = document.createElement("div");
     ball.classList.add("ball");
@@ -31,9 +31,15 @@ function drawActiveBall(logger, document, index, isMyMove) {
     drawItem(ball, index);
     if (!isMyMove) {
         ball.classList.add("wait");
+    } else {
+        field.classList.remove("disabled");
     }
     ball.addEventListener("dblclick", (e) => {
         e.preventDefault();
+        if (!ball.classList.contains("active")) {
+            logger.log(e.target);
+            return;
+        }
         changeColor(document);
     });
     col3.append(ball);
@@ -54,7 +60,7 @@ function drawIter2(presenter, logger, document, field) {
             }
             const ind = j;
             logger.log("index", ind, presenter.getMyIndex());
-            presenter.tryMove(ind, presenter.getMyIndex());
+            presenter.myMove(ind, presenter.getMyIndex());
         });
         for (let i = 0; i < presenter.height(); ++i) {
             const cell = document.createElement("div");
@@ -68,19 +74,13 @@ function drawIter2(presenter, logger, document, field) {
             background.append(cell);
         }
     }
-    drawActiveBall(logger, document, presenter.getCurrIndex(), presenter.isMyTurn());
+    drawActiveBall(logger, document, presenter.getCurrIndex(), presenter.isMyTurn(), field);
 }
 
-async function drawMove(logger, document, presenter, index, audioManager) {
-    let ball = null;
-    while (!ball) {
-        ball = document.querySelector(".ball.active");
-        if (ball) {
-            break;
-        }
-        await delay(200);
-    }
+async function drawMove(logger, document, presenter, index, audioManager, field) {
+    const ball = document.querySelector(".ball.active");
     ball.classList.remove("active", "wait");
+    field.classList.add("disabled");
     const xCoeff = index - 3;
     ball.style.setProperty("--x-coeff", xCoeff);
     await delay(100);
@@ -89,7 +89,6 @@ async function drawMove(logger, document, presenter, index, audioManager) {
     const yCoeff = presenter.emptySizeInCol(index) + 1;
     ball.style.setProperty("--y-coeff", yCoeff);
     await delay(300);
-    drawActiveBall(logger, document, presenter.getCurrIndex(), presenter.isMyTurn());
 }
 
 function setupOverlay(document, onClose) {
@@ -132,8 +131,9 @@ export function draw(window, document, settings, presenter, logger) {
     const overlay = setupOverlay(document);
     const drawer = {
         drawByPresenter : () => drawIter2(presenter, logger, document, field),
-        drawMove : (index, audioManager) => drawMove(logger, document, presenter, index, audioManager),
+        drawMove : (index, audioManager) => drawMove(logger, document, presenter, index, audioManager, field),
         onRoundStart: () => onRoundStart(overlay, field, reload),
+        drawActiveBall: () => drawActiveBall(logger, document, presenter.getCurrIndex(), presenter.isMyTurn(), field),
         onGameEndDraw:
             (res, message, messageSmall) =>
                 onGameEndDraw(res, overlay, field, reload, message, messageSmall)

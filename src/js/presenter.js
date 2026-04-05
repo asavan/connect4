@@ -7,6 +7,7 @@ export function presenter(settings, logger, trans) {
     const initArr = Array(settings.width).fill(1);
 
     let round = 0;
+    let insideAnimation = false;
 
     let externalDrawer = null;
     let gameStarted = false;
@@ -88,36 +89,52 @@ export function presenter(settings, logger, trans) {
             console.error("Bad Move");
             return res;
         }
+        insideAnimation = true;
         movesHistory.push(y);
         if (playerIndex === myIndex) {
             handlers.call("move", {y, index: myIndex});
         }
         drawer = drawer || externalDrawer;
         if (drawer) {
-            drawer.drawMove(y, audioM);
+            await drawer.drawMove(y, audioM);
         }
         if (res === FIRST_PLAYER || res === GAME_DRAW || res === SECOND_PLAYER) {
             const firstMessage = await getFirstMessage(res);
             const secondMessage = await getSecondMessage(res);
             if (drawer) {
-                drawer.onGameEndDraw(res, firstMessage, secondMessage);
+                await drawer.onGameEndDraw(res, firstMessage, secondMessage);
             }
+            insideAnimation = false;
+            return res;
         }
         if (settings.mode === "hotseat") {
             myIndex = nextIndex(myIndex);
         }
+        if (drawer) {
+            await drawer.drawActiveBall();
+        }
+        insideAnimation = false;
         return res;
     };
 
     const externalMove = (data) => tryMove(data.y, data.index, externalDrawer);
 
-    const myMove = (y) => tryMove(y, getMyIndex(), externalDrawer);
+    const myMove = async (y) => {
+        if (insideAnimation) {
+            logger.log("animating");
+            return;
+        }
+        insideAnimation = true;
+        const res = await tryMove(y, getMyIndex(), externalDrawer);
+        insideAnimation = false;
+        return res;
+    };
 
     // const {width, height, iterateHorizontal, cell, checkCurrIndex, getCurrIndex, emptySizeInCol, getRound} = eng;
     const width = () => eng.width();
     const height = () => eng.height();
     const cell = (x, y) => eng.cell(x, y);
-    const iterateHorizontal = eng.iterateHorizontal();
+    const iterateHorizontal = () => eng.iterateHorizontal();
     const checkCurrIndex = (ind) => eng.checkCurrIndex(ind);
     const getCurrIndex = () => eng.getCurrIndex();
     const emptySizeInCol = (ind) => eng.emptySizeInCol(ind);
