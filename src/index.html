@@ -23,7 +23,7 @@
                 <!--⛶ ⤭ ◱ 🗖 🗖 -->
                 <button id="butInstall" title="install" class="hidden contrl-btn butInstall">↓</button>
                 <button id="sound" title="sound" class="contrl-btn hidden js-sound-btn">&#128266;</button>
-                <button class="help-btn contrl-btn circled" title="Rules" popovertarget="myModal"></button>
+                <button class="js-help help-btn contrl-btn circled" title="Rules" popovertarget="rulesDialog"></button>
             </div>
             <div class="panel-content"></div>
         </div>
@@ -46,8 +46,8 @@
         </div>
     </div>
 </div>
-<dialog popover id="myModal" >
-    <p id="modalContent">
+<dialog popover id="rulesDialog" >
+    <p class="rulesContent">
         Connect 4 is a two-player strategy game where the goal is to be the first to connect four of your colored discs in a row—horizontally, vertically, or diagonally. Players take turns dropping discs into a vertical grid, with the game ending immediately when one player connects four or the grid fills up
     </p>
 </dialog>

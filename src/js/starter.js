@@ -3,6 +3,7 @@ import {assert} from "netutils";
 import {parseZipSettings} from "netutils/src/js/utils/parse-settings.js";
 import translator from "./translation.js";
 import handleAudio from "./audio-switcher.js";
+import handleHelpBtn from "./help-btn.js";
 
 export default async function starter(window, document) {
     await parseZipSettings(window.location.search, settings);
@@ -13,6 +14,7 @@ export default async function starter(window, document) {
     const trans = translator(settings.lang);
 
     handleAudio(window, document, settings);
+    handleHelpBtn(window, document, settings, trans, console);
 
     if (settings.mode === "net") {
         const netMode = await import("./mode/net_mode.js");
