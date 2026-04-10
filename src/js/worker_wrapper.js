@@ -7,7 +7,6 @@ try {
         type: "module",
     });
     const handleWorkerMessage = function (e) {
-        console.log(e.data.result);
         const res = e.data.result;
         assert(promiseHolder != null, "No holder");
         promiseHolder.resolve(res);
@@ -27,9 +26,7 @@ export async function getBestMoveByPlayer(data) {
     assert(promiseHolder == null, "concurrent call");
     promiseHolder = Promise.withResolvers();
     myWorker.postMessage({input: data});
-    console.log("getBestMoveByPlayer3");
     const result = await promiseHolder.promise;
-    console.log("getBestMoveByPlayer4");
     promiseHolder = null;
     return result;
 }

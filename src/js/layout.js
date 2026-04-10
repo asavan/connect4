@@ -46,7 +46,6 @@ function drawActiveBall(logger, document, index, isMyMove, field) {
 }
 
 function drawIter2(presenter, logger, document, field) {
-    logger.log("Call draw", presenter.getRound());
     field.replaceChildren();
     for (let j = 0; j < presenter.width(); ++j) {
         const background = document.createElement("div");
