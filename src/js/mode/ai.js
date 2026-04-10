@@ -16,10 +16,10 @@ function aiHelper(presenter, logger) {
         const res = await presenter.tryMove(nextMove, presenter.nextIndex(presenter.getMyIndex()));
         logger.log("After bot moved", res);
         return res;
-    }
+    };
     return {
         move
-    }
+    };
 }
 
 export default function ai(window, document, settings, gameFunction, trans) {
