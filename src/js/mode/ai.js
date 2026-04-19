@@ -1,7 +1,7 @@
 import {presenter} from "../presenter.js";
 import {draw} from "../layout.js";
 import {delay, loggerFunc} from "netutils";
-import {getBestMoveByPlayer, resetBoard} from "../worker_wrapper.js";
+import {initWorker, getBestMoveByPlayer, resetBoard} from "../worker_wrapper.js";
 import {VALIDATION_ERROR} from "../rules.js";
 
 function aiHelper(presenter, logger) {
@@ -23,11 +23,17 @@ function aiHelper(presenter, logger) {
 }
 
 export default function ai(window, document, settings, gameFunction, trans) {
-    const logger = loggerFunc(document, settings, 3);
-    const p = presenter(settings, logger, trans);
-    draw(window, document, settings, p, logger);
-
-    const helper = aiHelper(p, logger);
+    const logger = loggerFunc(document, settings, 4);
+    const logicLogger = loggerFunc(document, settings, 3);
+    const debugLogger = loggerFunc(document, settings, 1);
+    const layoutLogger = loggerFunc(document, settings, 2);
+    window.addEventListener("unhandledrejection", (event) => {
+        logger.log(`UNHANDLED PROMISE REJECTION: ${event.reason}`);
+    });
+    const p = presenter(settings, logicLogger, trans);
+    draw(window, document, settings, p, layoutLogger);
+    initWorker(logger);
+    const helper = aiHelper(p, debugLogger);
     p.on("move", async () => {
         await helper.move(1200);
     });

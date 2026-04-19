@@ -84,9 +84,8 @@ export function presenter(settings, logger, trans) {
 
     const tryMove = async (y, playerIndex, drawer) => {
         const res = eng.move(y, playerIndex);
-        logger.log("res1", res);
         if (res < 0) {
-            console.error("Bad Move");
+            logger.error("Bad Move");
             return res;
         }
         insideAnimation = true;

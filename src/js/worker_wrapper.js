@@ -2,20 +2,30 @@ import {assert} from "netutils";
 
 let myWorker = null;
 let promiseHolder = null;
-try {
-    myWorker = new Worker(new URL("./worker.js", import.meta.url), {
-        type: "module",
-    });
+
+export function initWorker(logger) {
     const handleWorkerMessage = function (e) {
         const res = e.data.result;
-        assert(promiseHolder != null, "No holder");
-        promiseHolder.resolve(res);
+        if (promiseHolder != null) {
+            promiseHolder.resolve(res);
+        } else {
+            logger.log("No promiseHolder");
+            logger.log(e.data);
+        }
     };
+    try {
+        myWorker = new Worker(new URL("./worker.js", import.meta.url), {
+            type: "module",
+        });
+        myWorker.onerror = (error) => {
+            logger.log(`Worker error: ${error.message}`);
+            // throw error;
+        };
+        myWorker.addEventListener("message", handleWorkerMessage, false);
 
-    myWorker.addEventListener("message", handleWorkerMessage, false);
-
-} catch (e) {
-    console.error(e);
+    } catch (e) {
+        logger.error(e);
+    }
 }
 
 export async function getBestMoveByPlayer(data) {

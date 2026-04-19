@@ -9,6 +9,7 @@ export function audioManager(settings, logger) {
             resolve();
         };
         audio.onerror = (err) => {
+            logger.error("No audio on path " + path);
             reject(err);
         };
     });
@@ -23,6 +24,8 @@ export function audioManager(settings, logger) {
             sound.audio.play().catch(err => {
                 logger.log(err);
             });
+        } else {
+            logger.log("Not loaded sound " + name);
         }
     };
 
