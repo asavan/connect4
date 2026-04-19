@@ -1,12 +1,18 @@
 {
   "name": "connect4",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
   "description": "connect4",
   "author": "Alex Sav",
   "main": "index.js",
   "type": "module",
   "sideEffects": false,
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "onFail": "error"
+    }
+  },
   "scripts": {
     "ws": "node devtools/ws-server.js",
     "start": "webpack serve --config webpack_configs/webpack.config.js --mode development",
