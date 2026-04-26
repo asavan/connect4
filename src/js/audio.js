@@ -34,9 +34,12 @@ export function audioManager(settings, logger) {
         load("gameover", "./sounds/clear_game.mp3")
     ]);
 
+    const getAllSounds = () => sounds;
+
     return {
         load,
         loadAll,
+        getAllSounds,
         play
     };
 }

@@ -1,8 +1,13 @@
 import {engine, FIRST_PLAYER, GAME_DRAW, SECOND_PLAYER} from "./rules.js";
 import {handlersFunc, assert, delay} from "netutils";
 import {audioManager} from "./audio.js";
+import {safariFixAudio} from "./safari-audio-fixer.js";
 
 export function presenter(settings, logger, trans) {
+
+    const handlers = handlersFunc(["move", "reload"]);
+    const {on, actionKeys, getAction} = handlers;
+
     let myIndex = settings.myIndex;
     const initArr = Array(settings.width).fill(1);
 
@@ -14,7 +19,9 @@ export function presenter(settings, logger, trans) {
 
     const audioM = audioManager(settings, logger);
     // await ?
-    audioM.loadAll();
+    audioM.loadAll().then(() => {
+        safariFixAudio(document, audioM, logger);
+    });
 
     let movesHistory = [];
 
@@ -35,8 +42,6 @@ export function presenter(settings, logger, trans) {
         gameStarted = true;
     };
 
-    const handlers = handlersFunc(["move", "reload"]);
-    const {on, actionKeys, getAction} = handlers;
 
     const nextIndex = (ind) => FIRST_PLAYER + SECOND_PLAYER - ind;
 
