@@ -9,8 +9,8 @@ function playThenPause(audioManager) {
 
 export function safariFixAudio(document, audioManager, logger) {
     try {
-        document.querySelector('body')?.addEventListener('click', function() {
-            logger.log('This will only log once.');
+        document.querySelector("body")?.addEventListener("click", () => {
+            logger.log("This will only log once.");
             try {
                 playThenPause(audioManager);
                 if (navigator.audioSession) {
