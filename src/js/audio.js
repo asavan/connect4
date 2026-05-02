@@ -23,6 +23,7 @@ export function audioManager(settings, logger) {
             // catch?
             sound.audio.play().catch(err => {
                 logger.log(err);
+                logger.error("Playback failed: " + err.name + " " + err.message);
             });
         } else {
             logger.log("Not loaded sound " + name);
