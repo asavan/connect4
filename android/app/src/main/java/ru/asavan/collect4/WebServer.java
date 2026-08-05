@@ -110,9 +110,12 @@ public class WebServer extends NanoWSD {
     @Override
     public void stop() {
         try {
+            executor.shutdown();
             disconectAll();
+            var terminated = executor.awaitTermination(5, TimeUnit.SECONDS);
+            Log.i(MAIN_LOG_TAG, "termination status " + terminated);
         } catch (Exception ex) {
-            // ignore
+            Log.e(MAIN_LOG_TAG, "error on stop", ex);
         }
         super.stop();
     }
@@ -144,7 +147,6 @@ public class WebServer extends NanoWSD {
             try {
                 ws.close(WebSocketFrame.CloseCode.NormalClosure, "exit", false);
             } catch (Exception e) {
-                // ignore
                 Log.e(MAIN_LOG_TAG, "disconectAll fail", e);
             }
         }
