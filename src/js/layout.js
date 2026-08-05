@@ -108,7 +108,7 @@ function setupOverlay(document, onClose) {
     return overlay;
 }
 
-function onGameEndDraw(res, overlay, field, reload, message, messageSmall) {
+function onGameEndDraw(res, overlay, field, reload, buffer, message, messageSmall) {
     field.classList.add("disabled");
     const h2 = overlay.querySelector("h2");
     h2.textContent = message;
@@ -116,12 +116,14 @@ function onGameEndDraw(res, overlay, field, reload, message, messageSmall) {
     content.textContent = messageSmall;
     overlay.classList.add("show");
     reload.classList.remove("hidden");
+    buffer.classList.add("hidden");
 }
 
-function onRoundStart(overlay, field, reload) {
+function onRoundStart(overlay, field, reload, buffer) {
     field.classList.remove("disabled");
     overlay.classList.remove("show");
     reload.classList.add("hidden");
+    buffer.classList.remove("hidden");
 }
 
 export function draw(window, document, settings, presenter, logger) {
@@ -129,6 +131,7 @@ export function draw(window, document, settings, presenter, logger) {
     document.documentElement.style.setProperty("--field-height", presenter.height());
     const field = document.querySelector(".field");
     const reload = document.querySelector(".reload");
+    const buffer = document.querySelector(".buffer");
 
     field.classList.remove("disabled");
     reload.classList.add("hidden");
@@ -136,11 +139,11 @@ export function draw(window, document, settings, presenter, logger) {
     const drawer = {
         drawByPresenter : () => drawIter2(presenter, logger, document, field),
         drawMove : (index, audioManager) => drawMove(logger, document, presenter, index, audioManager, field),
-        onRoundStart: () => onRoundStart(overlay, field, reload),
+        onRoundStart: () => onRoundStart(overlay, field, reload, buffer),
         drawActiveBall: () => drawActiveBall(logger, document, presenter.getCurrIndex(), presenter.isMyTurn(), field),
         onGameEndDraw:
             (res, message, messageSmall) =>
-                onGameEndDraw(res, overlay, field, reload, message, messageSmall)
+                onGameEndDraw(res, overlay, field, reload, buffer, message, messageSmall)
     };
 
     reload.addEventListener("click", () => {

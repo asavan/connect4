@@ -140,6 +140,9 @@ img {
 
 .app {
   width: clamp(200px, 100vw, 520px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .main-wrapper {
@@ -151,6 +154,7 @@ img {
 
 .field {
   display: grid;
+  width: clamp(200px, 100vw, 490px);
   grid-template-columns: repeat(var(--field-width), 1fr);
   aspect-ratio: calc(var(--field-width) / var(--field-height));
   max-width: 490px;
@@ -178,8 +182,8 @@ img {
 .reload {
   cursor: pointer;
   margin-top: 10px;
-  max-width: 500px;
   background-color: royalblue;
+  width: clamp(200px, 100%, 500px);
 }
 
 .back-col {
@@ -236,6 +240,7 @@ img {
 
 .buffer {
   min-height: 100px;
+  width: 100%;
 }
 
 .ball-animate {
