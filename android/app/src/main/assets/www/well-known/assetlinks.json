@@ -12,7 +12,7 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target" : { "namespace": "android_app", "package_name": "ru.asavan.collect4",
     "sha256_cert_fingerprints": [
-      "CC:16:07:AA:2C:00:F3:1D:7B:65:A9:34:D8:88:09:E2:33:6C:A1:4C:AC:AD:77:9C:BF:BC:2F:15:65:E4:6A:F4",
+      "CA:B3:38:E4:30:E5:44:8C:EF:BF:F5:3D:DE:37:0E:45:5D:62:89:68:FF:37:21:3A:7B:43:94:93:33:C5:82:36",
       "C4:92:AB:22:34:1A:2C:E7:F3:37:98:BE:ED:EC:F0:9A:EE:BE:10:76:91:CE:D8:5C:68:79:7F:5F:57:54:0F:4F"
     ]
   }
