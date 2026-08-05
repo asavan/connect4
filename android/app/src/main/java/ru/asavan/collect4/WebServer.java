@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoWSD;
@@ -21,6 +24,8 @@ public class WebServer extends NanoWSD {
     private final String folderToServe;
     private static final String DEFAULT_STATIC_FOLDER = "www";
 
+    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+
 
     public WebServer(Context context, int port, String folderToServe) {
         super(port);
@@ -30,10 +35,31 @@ public class WebServer extends NanoWSD {
 
         var testEx = getMimeTypeForFile("index.html");
         Log.i(MAIN_LOG_TAG, "mime after init " + testEx);
+        startHeartbeat();
     }
 
     public WebServer(Context context, int port) {
         this(context, port, DEFAULT_STATIC_FOLDER);
+    }
+
+    private void startHeartbeat() {
+        // Send a ping frame to the client every 5-10 seconds
+        executor.scheduleWithFixedDelay(() -> {
+            synchronized (this) {
+                for (WebSocket ws : list) {
+                    try {
+                        // Send an empty ping frame (Opcode 0x9)
+                        ws.ping(new byte[0]);
+                    } catch (IOException e) {
+                        // If sending fails, the socket is dead; force close it cleanly
+                        try {
+                            ws.close(WebSocketFrame.CloseCode.NormalClosure, "Ping failed", false);
+                        } catch (IOException ignored) {
+                        }
+                    }
+                }
+            }
+        }, 3, 3, TimeUnit.SECONDS);
     }
 
     @Override
