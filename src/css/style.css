@@ -139,7 +139,14 @@ img {
 }
 
 .app {
-  max-width: 520px;
+  width: clamp(200px, 100vw, 520px);
+}
+
+.main-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .field {

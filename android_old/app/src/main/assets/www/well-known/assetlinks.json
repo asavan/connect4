@@ -1,0 +1,11 @@
+[
+{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : { "namespace": "android_app", "package_name": "ru.asavan.connect4",
+    "sha256_cert_fingerprints": [
+      "69:F1:23:64:B2:A2:1B:65:7B:A2:DD:AA:FE:99:21:49:7D:0A:5E:E7:43:9B:DB:12:3A:B1:EB:AD:71:D9:77:CE",
+      "C4:92:AB:22:34:1A:2C:E7:F3:37:98:BE:ED:EC:F0:9A:EE:BE:10:76:91:CE:D8:5C:68:79:7F:5F:57:54:0F:4F"
+    ]
+  }
+}
+]

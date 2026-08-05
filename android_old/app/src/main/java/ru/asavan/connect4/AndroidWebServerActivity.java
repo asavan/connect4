@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.luigivampa92.ndefemulation.NdefEmulation;
+import com.luigivampa92.ndefemulation.ndef.UriNdefData;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,6 +22,7 @@ public class AndroidWebServerActivity extends Activity {
     private static final boolean secure = false;
 
     private BtnUtils btnUtils;
+    private NdefEmulation ndefEmulation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,8 +31,12 @@ public class AndroidWebServerActivity extends Activity {
         btnUtils = new BtnUtils(this, STATIC_CONTENT_PORT, WEB_SOCKET_PORT, secure);
         try {
             HostUtils hostUtils = new HostUtils(STATIC_CONTENT_PORT, WEB_SOCKET_PORT, secure);
-            addButtons(IpUtils.getIPAddressSafe(), hostUtils);
+            String formattedIpAddress = IpUtils.getIPAddressSafe();
+            addButtons(formattedIpAddress, hostUtils);
             btnUtils.launchTwa(hostUtils.getStaticHost(LOCALHOST), null);
+            final String host = hostUtils.getStaticHost(formattedIpAddress);
+            ndefEmulation = new NdefEmulation(this);
+            ndefEmulation.setCurrentEmulatedNdefData(new UriNdefData(host));
         } catch (Exception e) {
             Log.e(MAIN_LOG_TAG, "main", e);
         }
@@ -63,6 +71,7 @@ public class AndroidWebServerActivity extends Activity {
         if (btnUtils != null) {
             btnUtils.onDestroy();
         }
+        ndefEmulation.setCurrentEmulatedNdefData(null);
         super.onDestroy();
     }
 }
