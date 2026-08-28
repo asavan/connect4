@@ -39,7 +39,6 @@ public class AndroidWebServerActivity extends Activity {
         final String localhost = hostUtils.getStaticHost(IpUtils.LOCALHOST);
 
         Map<String, String> mainParams = new LinkedHashMap<>();
-        mainParams.put("wh", hostUtils.getSocketHost(IpUtils.LOCALHOST));
         mainParams.put("sh", host);
         btnUtils.addButtonTwa(localhost, mainParams, R.id.twa_real_ip, host);
         {

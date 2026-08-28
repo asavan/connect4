@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoWSD;
 
-public class WebServer extends NanoWSD {
+public class WebServer extends NanoWSD implements IWebSocketServer {
 
     private final List<WebSocket> list;
 
